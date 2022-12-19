@@ -1,0 +1,19 @@
+{
+  "name": "todo-list",
+  "version": "1.0.0",
+  "description": "Todo app with some advanced cool features. Developed as a training for OOP and Typescript.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/djrokita/todo-list.git"
+  },
+  "author": "Krzych Pierzchała",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/djrokita/todo-list/issues"
+  },
+  "homepage": "https://github.com/djrokita/todo-list#readme"
+}
