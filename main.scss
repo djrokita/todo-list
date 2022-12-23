@@ -1,5 +1,13 @@
-@import "bulma/bulma.sass";
+@charset "utf-8";
+@import "~bulma/bulma";
 
 // .container {
 //     background-color: aquamarine;
 // }
+.dev {
+    outline: 1px solid red;
+}
+
+.dashboard {
+    max-width: 600px;
+}
