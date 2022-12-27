@@ -1,0 +1,35 @@
+import { generateID } from '../utils';
+
+export abstract class Component<T extends HTMLElement, U extends HTMLElement> {
+    protected _id;
+    protected template?: HTMLTemplateElement;
+    protected host?: U;
+    protected element?: T;
+
+    constructor(templateId: string, hostId: string) {
+        this._id = generateID();
+        this.prepare(templateId, hostId);
+    }
+
+    protected prepareElement(id: string) {
+        this.template = document.getElementById(id) as HTMLTemplateElement;
+        this.element = this.template.content.cloneNode(true) as T;
+    }
+
+    protected attachElement(id: string) {
+        this.host = document.getElementById(id) as U;
+
+        if (this.element) {
+            this.host?.append(this.element);
+        }
+    }
+
+    protected prepare(templateId: string, hostId: string) {
+        this.prepareElement(templateId);
+        this.attachElement(hostId);
+    }
+
+    protected abstract render(): void;
+
+    protected abstract destroy(): void;
+}

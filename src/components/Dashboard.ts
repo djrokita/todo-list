@@ -1,8 +1,8 @@
-import { BaseElement } from './BaseElement';
+// import { BaseElement } from './BaseElement';
 
-export class Dashboard extends BaseElement {
+export class Dashboard {
     constructor(name: string, private _title: string) {
-        super(name);
+        // super(name);
     }
 
     set title(value: string) {
