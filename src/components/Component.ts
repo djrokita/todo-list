@@ -8,12 +8,12 @@ export abstract class Component<T extends HTMLElement, U extends HTMLElement> {
 
     constructor(templateId: string, hostId: string) {
         this._id = generateID();
-        this.prepare(templateId, hostId);
+        this.prepareNode(templateId, hostId);
     }
 
     protected prepareElement(id: string) {
         this.template = document.getElementById(id) as HTMLTemplateElement;
-        this.element = this.template.content.cloneNode(true) as T;
+        this.element = this.template.content.firstElementChild?.cloneNode(true) as T;
     }
 
     protected attachElement(id: string) {
@@ -24,10 +24,12 @@ export abstract class Component<T extends HTMLElement, U extends HTMLElement> {
         }
     }
 
-    protected prepare(templateId: string, hostId: string) {
+    protected prepareNode(templateId: string, hostId: string) {
         this.prepareElement(templateId);
         this.attachElement(hostId);
     }
+
+    protected abstract prepare(): void;
 
     protected abstract render(): void;
 

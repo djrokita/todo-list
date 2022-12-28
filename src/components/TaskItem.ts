@@ -1,6 +1,4 @@
-// import { BaseElement } from './BaseElement';
-// import { CREATOR } from '../renderers/index';
-import { Status, Task } from '../types';
+import { Status, ITask } from '../types';
 import { Component } from './Component';
 
 const ID_TEMPLATE = 'task-item';
@@ -16,23 +14,36 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
     // nameArea: HTMLElement | null = null;
     // box: HTMLElement | null = null;
 
-    constructor(task: Task) {
-        // debugger;
+    constructor(task: ITask) {
         super(ID_TEMPLATE, ID_HOST);
 
         this.name = task.name;
         this.status = task.status;
+        this.prepare();
     }
 
-    // protected prepare() {
-    //     console.log('preparing');
-    // }
+    protected prepare() {
+        this.renderName();
+    }
+
+    private renderName() {
+        const nameElement = this.element?.querySelector('#taskItem-name');
+
+        if (nameElement) {
+            nameElement.textContent = this.name;
+        }
+    }
 
     protected render() {
-        console.log('rendering list');
+        // debugger;
+        // const nameElement = this.element?.querySelector('#taskItem-name');
+        // if (nameElement) {
+        //     nameElement.textContent = this.name;
+        // }
     }
 
-    protected destroy() {
+    public destroy() {
         console.log('destroying');
+        this.element?.remove();
     }
 }
