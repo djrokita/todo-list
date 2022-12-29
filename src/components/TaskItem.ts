@@ -23,6 +23,7 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
     protected prepare() {
         this.renderName();
         this.prepareButtons();
+        this.prepareContainer();
         this.attachEvents();
     }
 
@@ -35,6 +36,12 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
             if (this.task.status === 'completed') {
                 nameElement.classList.add('is-line-through');
             }
+        }
+    }
+
+    private prepareContainer() {
+        if (this.task.status === 'completed') {
+            this.element?.classList.add('has-background-grey-lighter');
         }
     }
 
@@ -68,13 +75,7 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
         this.element?.dispatchEvent(checkEvent);
     }
 
-    protected render() {
-        // debugger;
-        // const nameElement = this.element?.querySelector('#taskItem-name');
-        // if (nameElement) {
-        //     nameElement.textContent = this.name;
-        // }
-    }
+    protected render() {}
 
     public destroy() {
         console.log('destroying');
