@@ -18,7 +18,7 @@ declare global {
         add: TaskEvent;
         remove: TaskEvent;
         edit: TaskEvent;
-        complete: TaskEvent;
+        check: TaskEvent;
         update: Event;
     }
 }

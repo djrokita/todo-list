@@ -35,6 +35,7 @@ export class State {
         if (this.host) {
             this.host?.addEventListener('add', this.addHandler.bind(this), true);
             this.host?.addEventListener('remove', this.removeHandler.bind(this), true);
+            this.host?.addEventListener('check', this.checkHandler.bind(this), true);
         }
     }
 
@@ -50,6 +51,15 @@ export class State {
         event.stopPropagation();
         const taskIndex = this._tasks.findIndex((task: ITask) => task.id === event.detail.id);
         this._tasks.splice(taskIndex, 1);
+        const list = this.host?.querySelector('#list-box');
+        const updateEvent = new CustomEvent('update');
+        list?.dispatchEvent(updateEvent);
+    }
+
+    private checkHandler(event: TaskEvent) {
+        event.stopPropagation();
+        const taskIndex = this._tasks.findIndex((task: ITask) => task.id === event.detail.id);
+        this._tasks.splice(taskIndex, 1, event.detail);
         const list = this.host?.querySelector('#list-box');
         const updateEvent = new CustomEvent('update');
         list?.dispatchEvent(updateEvent);

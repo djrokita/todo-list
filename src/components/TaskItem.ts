@@ -11,7 +11,7 @@ const ID_CHECK_BUTTON = 'task-check';
 export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
     editButton: HTMLElement | null = null;
     removeButton: HTMLElement | null = null;
-    completeButton: HTMLElement | null = null;
+    checkButton: HTMLElement | null = null;
     // nameArea: HTMLElement | null = null;
     // box: HTMLElement | null = null;
 
@@ -31,6 +31,10 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
 
         if (nameElement) {
             nameElement.textContent = this.task.name;
+
+            if (this.task.status === 'completed') {
+                nameElement.classList.add('is-line-through');
+            }
         }
     }
 
@@ -38,19 +42,30 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
         if (this.element) {
             this.removeButton = this.element.querySelector(`#${ID_REMOVE_BUTTON}`);
             this.editButton = this.element.querySelector(`#${ID_EDIT_BUTTON}`);
-            this.completeButton = this.element.querySelector(`#${ID_CHECK_BUTTON}`);
+            this.checkButton = this.element.querySelector(`#${ID_CHECK_BUTTON}`);
+
+            if (this.task.status === 'completed') {
+                this.editButton?.classList.add('is-hidden');
+            }
         }
     }
 
     private attachEvents() {
         this.removeButton?.addEventListener('click', this.removeHandler.bind(this));
         //     this.editButton?.addEventListener('click', this.editHandler.bind(this));
-        //     this.completeButton?.addEventListener('click', this.completeHandler.bind(this));
+        this.checkButton?.addEventListener('click', this.checkHandler.bind(this));
     }
 
     private removeHandler() {
         const removeEvent = new CustomEvent('remove', { detail: this.task });
         this.element?.dispatchEvent(removeEvent);
+    }
+
+    private checkHandler() {
+        const status = this.task.status === 'active' ? 'completed' : 'active';
+        const task: ITask = { ...this.task, status };
+        const checkEvent = new CustomEvent('check', { detail: task });
+        this.element?.dispatchEvent(checkEvent);
     }
 
     protected render() {
