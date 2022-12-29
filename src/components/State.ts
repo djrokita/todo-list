@@ -1,4 +1,4 @@
-import { TaskEvent, ITask } from '../types';
+import { TaskEvent, ITask, ACTIONS } from '../types';
 
 export class State {
     private static instance: State;
@@ -33,35 +33,46 @@ export class State {
 
     private attachEvents() {
         if (this.host) {
-            this.host?.addEventListener('add', this.addHandler.bind(this), true);
-            this.host?.addEventListener('remove', this.removeHandler.bind(this), true);
-            this.host?.addEventListener('check', this.checkHandler.bind(this), true);
+            this.host?.addEventListener(ACTIONS.ADD, this.eventHandler.bind(this), true);
+            this.host?.addEventListener(ACTIONS.REMOVE, this.eventHandler.bind(this), true);
+            this.host?.addEventListener(ACTIONS.CHECK, this.eventHandler.bind(this), true);
         }
     }
 
-    private addHandler(event: TaskEvent) {
+    private eventHandler(event: TaskEvent) {
         event.stopPropagation();
-        this._tasks.push(event.detail);
+        this.dispatchAction(event);
         const list = this.host?.querySelector('#list-box');
         const updateEvent = new CustomEvent('update');
         list?.dispatchEvent(updateEvent);
     }
 
-    private removeHandler(event: TaskEvent) {
-        event.stopPropagation();
-        const taskIndex = this._tasks.findIndex((task: ITask) => task.id === event.detail.id);
+    private addAction(task: ITask) {
+        this._tasks.push(task);
+    }
+
+    private removeAction(task: ITask) {
+        const taskIndex = this._tasks.findIndex((curTask: ITask) => curTask.id === task.id);
         this._tasks.splice(taskIndex, 1);
-        const list = this.host?.querySelector('#list-box');
-        const updateEvent = new CustomEvent('update');
-        list?.dispatchEvent(updateEvent);
     }
 
-    private checkHandler(event: TaskEvent) {
-        event.stopPropagation();
-        const taskIndex = this._tasks.findIndex((task: ITask) => task.id === event.detail.id);
-        this._tasks.splice(taskIndex, 1, event.detail);
-        const list = this.host?.querySelector('#list-box');
-        const updateEvent = new CustomEvent('update');
-        list?.dispatchEvent(updateEvent);
+    private checkAction(task: ITask) {
+        const taskIndex = this._tasks.findIndex((curTask: ITask) => curTask.id === task.id);
+        this._tasks.splice(taskIndex, 1, task);
+    }
+
+    private dispatchAction(event: TaskEvent) {
+        const { type, detail } = event;
+
+        switch (type) {
+            case ACTIONS.ADD:
+                return this.addAction(detail);
+            case ACTIONS.REMOVE:
+                return this.removeAction(detail);
+            case ACTIONS.CHECK:
+                return this.checkAction(detail);
+            default:
+                return null;
+        }
     }
 }

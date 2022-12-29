@@ -24,3 +24,9 @@ declare global {
 }
 
 export type TaskEvent = CustomEvent<ITask>;
+
+export enum ACTIONS {
+    ADD = 'add',
+    REMOVE = 'remove',
+    CHECK = 'check',
+}

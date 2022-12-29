@@ -1,4 +1,4 @@
-import { Status, ITask, TaskEvent } from '../types';
+import { ITask, ACTIONS } from '../types';
 import { Component } from './Component';
 
 const ID_TEMPLATE = 'task-item';
@@ -64,14 +64,14 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
     }
 
     private removeHandler() {
-        const removeEvent = new CustomEvent('remove', { detail: this.task });
+        const removeEvent = new CustomEvent(ACTIONS.REMOVE, { detail: this.task });
         this.element?.dispatchEvent(removeEvent);
     }
 
     private checkHandler() {
         const status = this.task.status === 'active' ? 'completed' : 'active';
         const task: ITask = { ...this.task, status };
-        const checkEvent = new CustomEvent('check', { detail: task });
+        const checkEvent = new CustomEvent(ACTIONS.CHECK, { detail: task });
         this.element?.dispatchEvent(checkEvent);
     }
 
