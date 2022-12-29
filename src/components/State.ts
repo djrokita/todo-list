@@ -1,9 +1,10 @@
-import { AddEvent, ITask } from '../types';
+import { TaskEvent, ITask } from '../types';
 
 export class State {
     private static instance: State;
     _tasks: ITask[] = [
         {
+            id: '1234test',
             ownerID: 'abc',
             name: 'Test task',
             status: 'active',
@@ -33,12 +34,22 @@ export class State {
     private attachEvents() {
         if (this.host) {
             this.host?.addEventListener('add', this.addHandler.bind(this), true);
+            this.host?.addEventListener('remove', this.removeHandler.bind(this), true);
         }
     }
 
-    private addHandler(event: AddEvent) {
+    private addHandler(event: TaskEvent) {
         event.stopPropagation();
         this._tasks.push(event.detail);
+        const list = this.host?.querySelector('#list-box');
+        const updateEvent = new CustomEvent('update');
+        list?.dispatchEvent(updateEvent);
+    }
+
+    private removeHandler(event: TaskEvent) {
+        event.stopPropagation();
+        const taskIndex = this._tasks.findIndex((task: ITask) => task.id === event.detail.id);
+        this._tasks.splice(taskIndex, 1);
         const list = this.host?.querySelector('#list-box');
         const updateEvent = new CustomEvent('update');
         list?.dispatchEvent(updateEvent);

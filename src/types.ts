@@ -1,4 +1,5 @@
 export interface ITask {
+    id: string;
     name: string;
     status: Status;
     startDate?: Date;
@@ -14,9 +15,12 @@ export type Status = ActiveStatus | CompletedStatus | RemovedStatus;
 
 declare global {
     interface HTMLElementEventMap {
-        add: AddEvent;
+        add: TaskEvent;
+        remove: TaskEvent;
+        edit: TaskEvent;
+        complete: TaskEvent;
         update: Event;
     }
 }
 
-export type AddEvent = CustomEvent<ITask>;
+export type TaskEvent = CustomEvent<ITask>;

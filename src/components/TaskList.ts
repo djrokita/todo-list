@@ -6,14 +6,6 @@ const ID_TEMPLATE = 'task-list';
 const ID_HOST = 'app';
 
 export class TaskList extends Component<HTMLTemplateElement, HTMLFormElement> {
-    // tasks: ITask[] = [
-    //     {
-    //         ownerID: 'abc',
-    //         name: 'Test task',
-    //         status: 'active',
-    //     },
-    // ];
-
     constructor(private tasks: ITask[]) {
         super(ID_TEMPLATE, ID_HOST);
 
@@ -26,7 +18,7 @@ export class TaskList extends Component<HTMLTemplateElement, HTMLFormElement> {
     }
 
     private updateHandler(event: Event) {
-        console.log('LIST', event);
+        console.log('LIST', this.tasks);
         this.render();
     }
 
