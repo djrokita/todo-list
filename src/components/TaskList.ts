@@ -5,7 +5,7 @@ import { TaskItem } from './TaskItem';
 const ID_TEMPLATE = 'task-list';
 const ID_HOST = 'app';
 
-export class TaskList extends Component<HTMLTemplateElement, HTMLFormElement> {
+export class TaskList extends Component<HTMLTemplateElement, HTMLDivElement> {
     constructor(private tasks: ITask[]) {
         super(ID_TEMPLATE, ID_HOST);
 

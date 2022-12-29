@@ -7,6 +7,7 @@ import '@fortawesome/fontawesome-free/js/brands';
 import { TaskForm } from './components/TaskForm';
 import { TaskList } from './components/TaskList';
 import { State } from './components/State';
+import { Modal } from './components/Modal';
 // import { AddEvent } from './types';
 
 const start = 'Starting...';
@@ -16,3 +17,4 @@ const state = State.getInstance();
 const tasks = state.task;
 new TaskForm();
 new TaskList(tasks);
+new Modal();

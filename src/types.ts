@@ -7,6 +7,12 @@ export interface ITask {
     ownerID?: string;
 }
 
+export type TModal = {
+    header: string;
+    // content: HTMLElement;
+    isOpen: boolean;
+};
+
 export type ActiveStatus = 'active';
 export type CompletedStatus = 'completed';
 export type RemovedStatus = 'removed';
@@ -20,10 +26,12 @@ declare global {
         edit: TaskEvent;
         check: TaskEvent;
         update: Event;
+        modal: ModalEvent;
     }
 }
 
 export type TaskEvent = CustomEvent<ITask>;
+export type ModalEvent = CustomEvent<TModal>;
 
 export enum ACTIONS {
     ADD = 'add',

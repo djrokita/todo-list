@@ -1,4 +1,4 @@
-import { ITask, ACTIONS } from '../types';
+import { ITask, ACTIONS, TModal } from '../types';
 import { Component } from './Component';
 
 const ID_TEMPLATE = 'task-item';
@@ -59,7 +59,7 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
 
     private attachEvents() {
         this.removeButton?.addEventListener('click', this.removeHandler.bind(this));
-        //     this.editButton?.addEventListener('click', this.editHandler.bind(this));
+        this.editButton?.addEventListener('click', this.editHandler.bind(this));
         this.checkButton?.addEventListener('click', this.checkHandler.bind(this));
     }
 
@@ -73,6 +73,13 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
         const task: ITask = { ...this.task, status };
         const checkEvent = new CustomEvent(ACTIONS.CHECK, { detail: task });
         this.element?.dispatchEvent(checkEvent);
+    }
+
+    private editHandler() {
+        const modalRef = <HTMLTemplateElement>document.querySelector('.modal');
+        const modal: TModal = { header: 'Edit your task', isOpen: true };
+        const modalEvent = new CustomEvent('modal', { detail: modal });
+        modalRef?.dispatchEvent(modalEvent);
     }
 
     protected render() {}
