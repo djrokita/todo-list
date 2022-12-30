@@ -13,6 +13,8 @@ export type TModal = {
     isOpen: boolean;
 };
 
+export type TModalDetail = { modal: TModal; task: ITask };
+
 export type ActiveStatus = 'active';
 export type CompletedStatus = 'completed';
 export type RemovedStatus = 'removed';
@@ -31,10 +33,11 @@ declare global {
 }
 
 export type TaskEvent = CustomEvent<ITask>;
-export type ModalEvent = CustomEvent<TModal>;
+export type ModalEvent = CustomEvent<TModalDetail>;
 
 export enum ACTIONS {
     ADD = 'add',
     REMOVE = 'remove',
     CHECK = 'check',
+    EDIT = 'edit',
 }

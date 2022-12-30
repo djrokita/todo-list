@@ -78,7 +78,8 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
     private editHandler() {
         const modalRef = <HTMLTemplateElement>document.querySelector('.modal');
         const modal: TModal = { header: 'Edit your task', isOpen: true };
-        const modalEvent = new CustomEvent('modal', { detail: modal });
+        const detail = { modal, task: this.task };
+        const modalEvent = new CustomEvent('modal', { detail });
         modalRef?.dispatchEvent(modalEvent);
     }
 

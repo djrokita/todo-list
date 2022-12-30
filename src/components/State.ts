@@ -32,11 +32,10 @@ export class State {
     }
 
     private attachEvents() {
-        if (this.host) {
-            this.host?.addEventListener(ACTIONS.ADD, this.eventHandler.bind(this), true);
-            this.host?.addEventListener(ACTIONS.REMOVE, this.eventHandler.bind(this), true);
-            this.host?.addEventListener(ACTIONS.CHECK, this.eventHandler.bind(this), true);
-        }
+        this.host?.addEventListener(ACTIONS.ADD, this.eventHandler.bind(this), true);
+        this.host?.addEventListener(ACTIONS.REMOVE, this.eventHandler.bind(this), true);
+        this.host?.addEventListener(ACTIONS.CHECK, this.eventHandler.bind(this), true);
+        this.host?.addEventListener(ACTIONS.EDIT, this.eventHandler.bind(this), true);
     }
 
     private eventHandler(event: TaskEvent) {
@@ -56,9 +55,14 @@ export class State {
         this._tasks.splice(taskIndex, 1);
     }
 
-    private checkAction(task: ITask) {
+    private editAction(task: ITask) {
         const taskIndex = this._tasks.findIndex((curTask: ITask) => curTask.id === task.id);
         this._tasks.splice(taskIndex, 1, task);
+    }
+
+    private closeModal(event: TaskEvent) {
+        const closeEvent = new Event('modal');
+        event.target?.dispatchEvent(closeEvent);
     }
 
     private dispatchAction(event: TaskEvent) {
@@ -70,7 +74,11 @@ export class State {
             case ACTIONS.REMOVE:
                 return this.removeAction(detail);
             case ACTIONS.CHECK:
-                return this.checkAction(detail);
+                return this.editAction(detail);
+            case ACTIONS.EDIT:
+                this.editAction(detail);
+                return this.closeModal(event);
+
             default:
                 return null;
         }
