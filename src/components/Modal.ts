@@ -75,12 +75,7 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
 
     private setContent() {
         if (!this.inputName || !this.task) return;
-
         this.inputName.value = this.task.name;
-        // document.activeElement?.blur();
-        // this.inputName.tabIndex = -1;
-        this.inputName.focus(); // dont work, dunno why :(
-        // this.form?.click(); // dont work, dunno why :(
 
         if (!this.header || !this.modal) return;
 
@@ -104,6 +99,10 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
 
     private toggleModal() {
         this.element?.classList.toggle(ACTIVE_MODAL);
+
+        if (this.element?.classList.contains(ACTIVE_MODAL)) {
+            this.inputName?.focus();
+        }
     }
 
     protected prepare() {
