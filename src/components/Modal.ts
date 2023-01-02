@@ -7,6 +7,7 @@ const ID_SAVE_BUTTON = 'modal-save';
 const ID_CANCEL_BUTTON = 'modal-cancel';
 const ID_ClOSE_BUTTON = 'modal-close';
 const ID_INPUT_NAME = 'modal-input';
+const ID_FORM = 'modal-form';
 const ID_HEADER = 'modal-header';
 const ACTIVE_MODAL = 'is-active';
 
@@ -18,6 +19,7 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
     header: HTMLParagraphElement | null = null;
     modal: TModal | null = null;
     task: ITask | null = null;
+    form: HTMLFormElement | null = null;
 
     constructor() {
         super(ID_TEMPLATE, ID_HOST);
@@ -34,7 +36,7 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
                 button.addEventListener('click', this.toggleModal.bind(this));
             });
         }
-
+        this.form?.addEventListener('submit', this.saveHandler.bind(this));
         this.saveButton?.addEventListener('click', this.saveHandler.bind(this));
     }
 
@@ -49,6 +51,7 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
     private prepareInputName() {
         if (!this.element) return;
 
+        this.form = this.element.querySelector(`#${ID_FORM}`);
         this.inputName = this.element.querySelector(`#${ID_INPUT_NAME}`);
     }
 
@@ -74,6 +77,10 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
         if (!this.inputName || !this.task) return;
 
         this.inputName.value = this.task.name;
+        // document.activeElement?.blur();
+        // this.inputName.tabIndex = -1;
+        this.inputName.focus(); // dont work, dunno why :(
+        // this.form?.click(); // dont work, dunno why :(
 
         if (!this.header || !this.modal) return;
 
@@ -85,8 +92,11 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
         this.task = null;
     }
 
-    private saveHandler() {
+    private saveHandler(event: Event) {
+        event.preventDefault();
+
         if (!this.inputName || !this.task) return;
+
         const task: ITask = { ...this.task, name: this.inputName?.value };
         const editEvent = new CustomEvent('edit', { detail: task });
         this.element?.dispatchEvent(editEvent);
