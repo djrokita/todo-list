@@ -1,5 +1,6 @@
 import { ITask, Status } from '../types';
 import { generateID } from '../utils';
+import { Validation } from '../services';
 
 export class Task implements ITask {
     id: string;
@@ -13,6 +14,9 @@ export class Task implements ITask {
     }
 
     static init(name = '') {
+        Validation.isEmpty(name);
+        Validation.hasMaxLenght(name, 10);
+
         const trimmedName = name.trim();
 
         if (trimmedName) {
