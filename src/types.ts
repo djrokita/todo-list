@@ -2,7 +2,7 @@ export interface ITask {
     id: string;
     name: string;
     status: Status;
-    // editName: (name: string) => CustomEvent<string>;
+    editName: (name: string) => CustomEvent<EditNamePayload>;
     startDate?: Date;
     endDate?: Date;
     ownerID?: string;

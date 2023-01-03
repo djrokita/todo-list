@@ -12,30 +12,34 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
     editButton: HTMLElement | null = null;
     removeButton: HTMLElement | null = null;
     checkButton: HTMLElement | null = null;
-    // nameArea: HTMLElement | null = null;
-    // box: HTMLElement | null = null;
+    nameElement: HTMLElement | null | undefined;
 
     constructor(private task: ITask) {
         super(ID_TEMPLATE, ID_HOST);
         this.prepare();
     }
 
+    update() {
+        this.prepareName();
+        this.prepareContainer();
+    }
+
     protected prepare() {
-        this.renderName();
+        this.prepareName();
         this.prepareButtons();
         this.prepareContainer();
         this.attachEvents();
     }
 
-    private renderName() {
-        const nameElement = this.element?.querySelector('#taskItem-name');
+    private prepareName() {
+        this.nameElement = this.element?.querySelector('#taskItem-name');
 
-        if (nameElement) {
-            nameElement.textContent = this.task.name;
+        if (!this.nameElement) return;
 
-            if (this.task.status === 'completed') {
-                nameElement.classList.add('is-line-through');
-            }
+        this.nameElement.textContent = this.task.name;
+
+        if (this.task.status === 'completed') {
+            this.nameElement.classList.add('is-line-through');
         }
     }
 

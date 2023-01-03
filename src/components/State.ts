@@ -46,13 +46,8 @@ export class State {
 
     createTask(name: string) {
         const task = new Task(name, this.destroyTask.bind(this));
-        // debugger;
-
-        // if (Object.hasOwn())
 
         if (!Object.prototype.hasOwnProperty.call(this._tasks, task.id)) {
-            // Object.create()
-            // Object.defineProperty(this._tasks, task.id, { value: task });
             this._tasks[task.id] = task;
         }
 
@@ -73,16 +68,11 @@ export class State {
         }
     }
 
-    // private editAction(payload: EditNamePayload) {
-    //     // const taskIndex = this._tasks.findIndex((curTask: ITask) => curTask.id === payload.id);
-    //     // debugger;
-    //     const task = this._tasks.find((curTask: ITask) => curTask.id === payload.id);
-    //     if (task) {
-    //         task.name = payload.name;
-    //     }
-
-    //     // this._tasks.splice(taskIndex, 1, task);
-    // }
+    private editAction(payload: EditNamePayload) {
+        if (Object.prototype.hasOwnProperty.call(this._tasks, payload.id)) {
+            this._tasks[payload.id].changeName(payload.name);
+        }
+    }
 
     private closeModal(event: TaskEvent) {
         const closeEvent = new Event('modal');
@@ -99,9 +89,9 @@ export class State {
                 return this.removeAction(detail);
             // case ACTIONS.CHECK:
             //     return this.editAction(detail);
-            // case ACTIONS.EDIT:
-            //     this.editAction(detail);
-            //     return this.closeModal(event);
+            case ACTIONS.EDIT:
+                this.editAction(detail);
+                return this.closeModal(event);
 
             default:
                 return null;

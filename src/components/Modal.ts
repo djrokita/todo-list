@@ -92,10 +92,8 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
 
         if (!this.inputName || !this.task) return;
 
-        // const task: ITask = { ...this.task, name: this.inputName?.value };
-        // const editEvent = new CustomEvent('edit', { detail: task });
-        // const editEvent = this.task.editName(this.inputName.value);
-        // this.element?.dispatchEvent(editEvent);
+        const editEvent = this.task.editName(this.inputName.value);
+        this.element?.dispatchEvent(editEvent);
     }
 
     private toggleModal() {

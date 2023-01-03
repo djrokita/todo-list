@@ -11,6 +11,10 @@ export abstract class Component<T extends HTMLElement, U extends HTMLElement> {
         this.prepareNode(templateId, hostId);
     }
 
+    destroy() {
+        this.element?.remove();
+    }
+
     protected prepareElement(id: string) {
         this.template = document.getElementById(id) as HTMLTemplateElement;
         this.element = this.template.content.firstElementChild?.cloneNode(true) as T;
@@ -32,8 +36,4 @@ export abstract class Component<T extends HTMLElement, U extends HTMLElement> {
     protected abstract prepare(): void;
 
     protected abstract render(): void;
-
-    destroy() {
-        this.element?.remove();
-    }
 }
