@@ -2,6 +2,7 @@ export interface ITask {
     id: string;
     name: string;
     status: Status;
+    // editName: (name: string) => CustomEvent<string>;
     startDate?: Date;
     endDate?: Date;
     ownerID?: string;
@@ -13,7 +14,8 @@ export type TModal = {
     isOpen: boolean;
 };
 
-export type TModalDetail = { modal: TModal; task: ITask };
+export type ModalPayload = { modal: TModal; task: ITask };
+export type EditNamePayload = { id: string; name: string };
 
 export type ActiveStatus = 'active';
 export type CompletedStatus = 'completed';
@@ -33,7 +35,8 @@ declare global {
 }
 
 export type TaskEvent = CustomEvent<ITask>;
-export type ModalEvent = CustomEvent<TModalDetail>;
+export type EditNameEvent = CustomEvent<EditNamePayload>;
+export type ModalEvent = CustomEvent<ModalPayload>;
 
 export enum ACTIONS {
     ADD = 'add',

@@ -1,15 +1,9 @@
-import { TaskEvent, ITask, ACTIONS } from '../types';
+import { TaskEvent, ITask, ACTIONS, EditNameEvent, EditNamePayload } from '../types';
+import { Task } from './Task';
 
 export class State {
     private static instance: State;
-    _tasks: ITask[] = [
-        {
-            id: '1234test',
-            ownerID: 'abc',
-            name: 'Test task',
-            status: 'active',
-        },
-    ];
+    _tasks: Record<string, Task> = {};
     private host: HTMLElement | null;
 
     static getInstance() {
@@ -22,9 +16,9 @@ export class State {
         return this.instance;
     }
 
-    get task() {
-        return this._tasks;
-    }
+    // get tasks() {
+    //     return this._tasks;
+    // }
 
     private constructor() {
         this.host = document.getElementById('app');
@@ -46,26 +40,56 @@ export class State {
         list?.dispatchEvent(updateEvent);
     }
 
-    private addAction(task: ITask) {
-        this._tasks.push(task);
+    private addAction(name: 'string') {
+        this.createTask(name);
     }
 
-    private removeAction(task: ITask) {
-        const taskIndex = this._tasks.findIndex((curTask: ITask) => curTask.id === task.id);
-        this._tasks.splice(taskIndex, 1);
+    createTask(name: string) {
+        const task = new Task(name, this.destroyTask.bind(this));
+        // debugger;
+
+        // if (Object.hasOwn())
+
+        if (!Object.prototype.hasOwnProperty.call(this._tasks, task.id)) {
+            // Object.create()
+            // Object.defineProperty(this._tasks, task.id, { value: task });
+            this._tasks[task.id] = task;
+        }
+
+        console.log('state', this._tasks);
     }
 
-    private editAction(task: ITask) {
-        const taskIndex = this._tasks.findIndex((curTask: ITask) => curTask.id === task.id);
-        this._tasks.splice(taskIndex, 1, task);
+    private destroyTask(id: string) {
+        if (Object.prototype.hasOwnProperty.call(this._tasks, id)) {
+            delete this._tasks[id];
+        }
+
+        return !Object.prototype.hasOwnProperty.call(this._tasks, id);
     }
+
+    private removeAction(payload: { id: string }) {
+        if (Object.prototype.hasOwnProperty.call(this._tasks, payload.id)) {
+            this._tasks[payload.id].remove();
+        }
+    }
+
+    // private editAction(payload: EditNamePayload) {
+    //     // const taskIndex = this._tasks.findIndex((curTask: ITask) => curTask.id === payload.id);
+    //     // debugger;
+    //     const task = this._tasks.find((curTask: ITask) => curTask.id === payload.id);
+    //     if (task) {
+    //         task.name = payload.name;
+    //     }
+
+    //     // this._tasks.splice(taskIndex, 1, task);
+    // }
 
     private closeModal(event: TaskEvent) {
         const closeEvent = new Event('modal');
         event.target?.dispatchEvent(closeEvent);
     }
 
-    private dispatchAction(event: TaskEvent) {
+    private dispatchAction(event: CustomEvent) {
         const { type, detail } = event;
 
         switch (type) {
@@ -73,11 +97,11 @@ export class State {
                 return this.addAction(detail);
             case ACTIONS.REMOVE:
                 return this.removeAction(detail);
-            case ACTIONS.CHECK:
-                return this.editAction(detail);
-            case ACTIONS.EDIT:
-                this.editAction(detail);
-                return this.closeModal(event);
+            // case ACTIONS.CHECK:
+            //     return this.editAction(detail);
+            // case ACTIONS.EDIT:
+            //     this.editAction(detail);
+            //     return this.closeModal(event);
 
             default:
                 return null;

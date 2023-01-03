@@ -6,7 +6,7 @@ const ID_TEMPLATE = 'task-list';
 const ID_HOST = 'app';
 
 export class TaskList extends Component<HTMLTemplateElement, HTMLDivElement> {
-    constructor(private tasks: ITask[]) {
+    constructor() {
         super(ID_TEMPLATE, ID_HOST);
 
         this.prepare();
@@ -18,18 +18,8 @@ export class TaskList extends Component<HTMLTemplateElement, HTMLDivElement> {
     }
 
     private updateHandler(event: Event) {
-        console.log('LIST', this.tasks);
+        // console.log('LIST', this.tasks);
         this.render();
-    }
-
-    // protected prepare() {
-    //     console.log('preparing');
-    // }
-
-    private renderList() {
-        for (const task of this.tasks.slice()) {
-            new TaskItem(task);
-        }
     }
 
     private clearList() {
@@ -38,16 +28,11 @@ export class TaskList extends Component<HTMLTemplateElement, HTMLDivElement> {
         }
     }
 
-    protected prepare() {
-        this.renderList();
-    }
+    protected prepare() {}
 
-    protected render() {
-        this.clearList();
-        this.renderList();
-    }
+    protected render() {}
 
-    protected destroy() {
+    destroy() {
         console.log('destroying');
     }
 }

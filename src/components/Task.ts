@@ -1,26 +1,35 @@
-import { ITask, Status } from '../types';
+import { EditNamePayload, ITask, Status } from '../types';
 import { generateID } from '../utils';
 import { Validation } from '../services';
+import { TaskItem } from './TaskItem';
 
 export class Task implements ITask {
     id: string;
     name: string;
     status: Status;
+    ref: TaskItem;
+    // editName: (name: string) => CustomEvent<ITask>;
 
-    constructor(name: string) {
-        this.id = generateID();
-        this.name = name;
-        this.status = 'active';
-    }
-
-    static init(name = '') {
+    constructor(name: string, private destroy: (id: string) => boolean) {
         Validation.isEmpty(name);
         Validation.hasMaxLenght(name, 10);
 
-        const trimmedName = name.trim();
+        this.id = generateID();
+        this.name = name.trim();
+        this.status = 'active';
+        this.ref = new TaskItem(this);
+    }
 
-        if (trimmedName) {
-            return new Task(trimmedName);
-        }
+    editName(name: string): CustomEvent<EditNamePayload> {
+        Validation.isEmpty(name);
+        Validation.hasMaxLenght(name, 10);
+
+        return new CustomEvent('edit', { detail: { id: this.id, name } });
+    }
+
+    remove() {
+        Promise.resolve(this.destroy(this.id)).then((res: boolean) => {
+            return res && this.ref.destroy();
+        });
     }
 }

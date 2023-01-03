@@ -33,5 +33,7 @@ export abstract class Component<T extends HTMLElement, U extends HTMLElement> {
 
     protected abstract render(): void;
 
-    protected abstract destroy(): void;
+    destroy() {
+        this.element?.remove();
+    }
 }

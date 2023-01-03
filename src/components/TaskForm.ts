@@ -1,5 +1,4 @@
 import { Component } from './Component';
-import { Task } from './Task';
 import { ErrorIsEmpty, ErrorMaxLength } from '../errors';
 
 const ID_TEMPLATE = 'task-form';
@@ -20,14 +19,13 @@ export class TaskForm extends Component<HTMLTemplateElement, HTMLFormElement> {
         event.preventDefault();
         this.resetError();
 
-        try {
-            const task = Task.init(this.inputNameElement?.value);
-            const addEvent = new CustomEvent('add', { detail: task, bubbles: false });
-            const isDispatched = this.element?.dispatchEvent(addEvent);
+        if (!this.inputNameElement) return;
 
-            if (isDispatched && this.inputNameElement) {
-                this.inputNameElement.value = '';
-            }
+        try {
+            const addEvent = new CustomEvent('add', { detail: this.inputNameElement.value, bubbles: false });
+            this.element?.dispatchEvent(addEvent);
+
+            this.inputNameElement.value = '';
         } catch (error) {
             if (!this.error) return;
 
@@ -72,7 +70,7 @@ export class TaskForm extends Component<HTMLTemplateElement, HTMLFormElement> {
         console.log('render');
     }
 
-    protected destroy() {
+    destroy() {
         console.log('destroying');
     }
 }

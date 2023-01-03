@@ -13,8 +13,7 @@ import { Modal } from './components/Modal';
 const start = 'Starting...';
 console.log('🚀 ~ file: index.ts:2 ~ start', start);
 
-const state = State.getInstance();
-const tasks = state.task;
+State.getInstance();
 new TaskForm();
-new TaskList(tasks);
+new TaskList();
 new Modal();

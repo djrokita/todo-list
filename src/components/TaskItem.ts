@@ -64,7 +64,7 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
     }
 
     private removeHandler() {
-        const removeEvent = new CustomEvent(ACTIONS.REMOVE, { detail: this.task });
+        const removeEvent = new CustomEvent(ACTIONS.REMOVE, { detail: { id: this.task.id } });
         this.element?.dispatchEvent(removeEvent);
     }
 
@@ -85,8 +85,8 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
 
     protected render() {}
 
-    public destroy() {
-        console.log('destroying');
-        this.element?.remove();
-    }
+    // public destroy() {
+    //     console.log('destroying');
+    //     this.element?.remove();
+    // }
 }
