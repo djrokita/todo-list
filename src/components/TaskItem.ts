@@ -21,13 +21,12 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
 
     update() {
         this.prepareName();
-        this.prepareContainer();
+        this.adjustElementToStatus();
     }
 
     protected prepare() {
         this.prepareName();
         this.prepareButtons();
-        this.prepareContainer();
         this.attachEvents();
     }
 
@@ -37,16 +36,6 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
         if (!this.nameElement) return;
 
         this.nameElement.textContent = this.task.name;
-
-        if (this.task.status === 'completed') {
-            this.nameElement.classList.add('is-line-through');
-        }
-    }
-
-    private prepareContainer() {
-        if (this.task.status === 'completed') {
-            this.element?.classList.add('has-background-grey-lighter');
-        }
     }
 
     private prepareButtons() {
@@ -54,10 +43,20 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
             this.removeButton = this.element.querySelector(`#${ID_REMOVE_BUTTON}`);
             this.editButton = this.element.querySelector(`#${ID_EDIT_BUTTON}`);
             this.checkButton = this.element.querySelector(`#${ID_CHECK_BUTTON}`);
+        }
+    }
 
-            if (this.task.status === 'completed') {
-                this.editButton?.classList.add('is-hidden');
-            }
+    private adjustElementToStatus() {
+        if (this.task.status === 'completed') {
+            this.element?.classList.add('has-background-grey-lighter');
+            this.nameElement?.classList.add('is-line-through');
+            this.editButton?.classList.add('is-hidden');
+        }
+
+        if (this.task.status === 'active') {
+            this.element?.classList.remove('has-background-grey-lighter');
+            this.nameElement?.classList.remove('is-line-through');
+            this.editButton?.classList.remove('is-hidden');
         }
     }
 
@@ -74,9 +73,8 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
 
     private checkHandler() {
         const status = this.task.status === 'active' ? 'completed' : 'active';
-        const task: ITask = { ...this.task, status };
-        const checkEvent = new CustomEvent(ACTIONS.CHECK, { detail: task });
-        this.element?.dispatchEvent(checkEvent);
+        this.task.status = status;
+        this.update();
     }
 
     private editHandler() {
