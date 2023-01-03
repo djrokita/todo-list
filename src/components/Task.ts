@@ -1,21 +1,22 @@
-import { EditNamePayload, ITask, Status } from '../types';
+import { ITask, Status } from '../types';
 import { generateID } from '../utils';
 import { Validation } from '../services';
 import { TaskItem } from './TaskItem';
+import { State } from './State';
 
 export class Task implements ITask {
     id: string;
     status: Status;
-    ref: TaskItem;
+    ref: TaskItem | null = null;
+    private state: State;
 
-    constructor(private _name: string, private destroy: (id: string) => boolean) {
-        Validation.isEmpty(_name);
-        Validation.hasMaxLenght(_name, 10);
-
+    constructor(private _name: string) {
+        this.validateName(_name);
         this.id = generateID();
         this.name = _name.trim();
         this.status = 'active';
-        this.ref = new TaskItem(this);
+        this.state = State.getInstance();
+        this.getInstance();
     }
 
     get name() {
@@ -26,21 +27,30 @@ export class Task implements ITask {
         this._name = value;
     }
 
-    editName(name: string): CustomEvent<EditNamePayload> {
-        Validation.isEmpty(name);
-        Validation.hasMaxLenght(name, 10);
-
-        return new CustomEvent('edit', { detail: { id: this.id, name } });
+    changeName(name: string) {
+        this.validateName(name);
+        this.name = name;
+        this.ref?.update();
     }
 
-    changeName(name: string) {
-        this.name = name;
-        this.ref.update();
+    private validateName(name: string): void {
+        Validation.isEmpty(name);
+        Validation.hasMaxLenght(name, 10);
+    }
+
+    private getInstance() {
+        const isStored = this.state.addTask(this);
+
+        if (isStored) {
+            this.ref = new TaskItem(this);
+        }
     }
 
     remove() {
-        Promise.resolve(this.destroy(this.id)).then((res: boolean) => {
-            return res && this.ref.destroy();
-        });
+        const isRemoved = this.state.removeTask(this.id);
+
+        if (isRemoved) {
+            this.ref?.destroy();
+        }
     }
 }

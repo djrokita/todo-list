@@ -2,7 +2,6 @@ export interface ITask {
     id: string;
     name: string;
     status: Status;
-    editName: (name: string) => CustomEvent<EditNamePayload>;
     startDate?: Date;
     endDate?: Date;
     ownerID?: string;
@@ -37,10 +36,3 @@ declare global {
 export type TaskEvent = CustomEvent<ITask>;
 export type EditNameEvent = CustomEvent<EditNamePayload>;
 export type ModalEvent = CustomEvent<ModalPayload>;
-
-export enum ACTIONS {
-    ADD = 'add',
-    REMOVE = 'remove',
-    CHECK = 'check',
-    EDIT = 'edit',
-}

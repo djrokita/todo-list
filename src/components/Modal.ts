@@ -111,9 +111,7 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
         this.prepareHeader();
     }
 
-    protected render() {}
-
-    destroy() {
-        console.log('destroying');
+    protected render() {
+        console.log('render...');
     }
 }

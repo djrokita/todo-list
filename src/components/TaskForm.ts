@@ -1,5 +1,6 @@
 import { Component } from './Component';
 import { ErrorIsEmpty, ErrorMaxLength } from '../errors';
+import { Task } from './Task';
 
 const ID_TEMPLATE = 'task-form';
 const ID_HOST = 'app';
@@ -22,9 +23,7 @@ export class TaskForm extends Component<HTMLTemplateElement, HTMLFormElement> {
         if (!this.inputNameElement) return;
 
         try {
-            const addEvent = new CustomEvent('add', { detail: this.inputNameElement.value, bubbles: false });
-            this.element?.dispatchEvent(addEvent);
-
+            new Task(this.inputNameElement.value);
             this.inputNameElement.value = '';
         } catch (error) {
             if (!this.error) return;

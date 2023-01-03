@@ -1,4 +1,4 @@
-import { ACTIONS, TModal, ModalPayload } from '../types';
+import { TModal, ModalPayload } from '../types';
 import { Task } from './Task';
 import { Component } from './Component';
 
@@ -68,8 +68,7 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
     }
 
     private removeHandler() {
-        const removeEvent = new CustomEvent(ACTIONS.REMOVE, { detail: { id: this.task.id } });
-        this.element?.dispatchEvent(removeEvent);
+        this.task.remove();
     }
 
     private checkHandler() {
@@ -86,10 +85,7 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
         modalRef?.dispatchEvent(modalEvent);
     }
 
-    protected render() {}
-
-    // public destroy() {
-    //     console.log('destroying');
-    //     this.element?.remove();
-    // }
+    protected render() {
+        console.log('render...');
+    }
 }
