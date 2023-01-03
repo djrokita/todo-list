@@ -1,4 +1,5 @@
-import { ITask, ACTIONS, TModal } from '../types';
+import { ACTIONS, TModal, ModalPayload } from '../types';
+import { Task } from './Task';
 import { Component } from './Component';
 
 const ID_TEMPLATE = 'task-item';
@@ -14,7 +15,7 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
     checkButton: HTMLElement | null = null;
     nameElement: HTMLElement | null | undefined;
 
-    constructor(private task: ITask) {
+    constructor(private task: Task) {
         super(ID_TEMPLATE, ID_HOST);
         this.prepare();
     }
@@ -79,8 +80,8 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
 
     private editHandler() {
         const modalRef = <HTMLTemplateElement>document.querySelector('.modal');
-        const modal: TModal = { header: 'Edit your task', isOpen: true };
-        const detail = { modal, task: this.task };
+        const modal: TModal = { header: 'Edit your task', value: this.task.name };
+        const detail: ModalPayload = { modal, handler: this.task.changeName.bind(this.task) };
         const modalEvent = new CustomEvent('modal', { detail });
         modalRef?.dispatchEvent(modalEvent);
     }

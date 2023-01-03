@@ -11,10 +11,10 @@ export interface ITask {
 export type TModal = {
     header: string;
     // content: HTMLElement;
-    isOpen: boolean;
+    value: string;
 };
 
-export type ModalPayload = { modal: TModal; task: ITask };
+export type ModalPayload = { modal: TModal; handler: (value: string) => void };
 export type EditNamePayload = { id: string; name: string };
 
 export type ActiveStatus = 'active';

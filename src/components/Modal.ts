@@ -1,5 +1,5 @@
 import { Component } from './Component';
-import { ITask, ModalEvent, TModal } from '../types';
+import { ModalEvent, TModal } from '../types';
 
 const ID_TEMPLATE = 'modal';
 const ID_HOST = 'app';
@@ -18,7 +18,7 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
     inputName: HTMLInputElement | null = null;
     header: HTMLParagraphElement | null = null;
     modal: TModal | null = null;
-    task: ITask | null = null;
+    handler: (value: string) => void;
     form: HTMLFormElement | null = null;
 
     constructor() {
@@ -26,6 +26,7 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
 
         this.prepare();
         this.attachEvents();
+        this.handler = (e: string) => e;
     }
 
     private attachEvents() {
@@ -64,7 +65,7 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
     private modalHandler(event: ModalEvent) {
         if (event.detail) {
             this.modal = event.detail.modal;
-            this.task = event.detail.task;
+            this.handler = event.detail.handler;
             this.setContent();
         } else {
             this.clear();
@@ -74,26 +75,24 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
     }
 
     private setContent() {
-        if (!this.inputName || !this.task) return;
-        this.inputName.value = this.task.name;
+        if (!this.header || !this.modal || !this.inputName) return;
 
-        if (!this.header || !this.modal) return;
-
+        this.inputName.value = this.modal.value;
         this.header.textContent = this.modal.header;
     }
 
     private clear() {
         this.modal = null;
-        this.task = null;
+        this.handler = (e: string) => e;
     }
 
     private saveHandler(event: Event) {
         event.preventDefault();
 
-        if (!this.inputName || !this.task) return;
+        if (!this.inputName || !this.handler) return;
 
-        const editEvent = this.task.editName(this.inputName.value);
-        this.element?.dispatchEvent(editEvent);
+        this.handler(this.inputName.value);
+        this.toggleModal();
     }
 
     private toggleModal() {
@@ -101,6 +100,8 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
 
         if (this.element?.classList.contains(ACTIVE_MODAL)) {
             this.inputName?.focus();
+        } else {
+            this.clear();
         }
     }
 

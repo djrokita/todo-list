@@ -16,9 +16,9 @@ export class State {
         return this.instance;
     }
 
-    // get tasks() {
-    //     return this._tasks;
-    // }
+    get tasks() {
+        return this._tasks;
+    }
 
     private constructor() {
         this.host = document.getElementById('app');
@@ -40,7 +40,7 @@ export class State {
         list?.dispatchEvent(updateEvent);
     }
 
-    private addAction(name: 'string') {
+    private addAction(name: string) {
         this.createTask(name);
     }
 
