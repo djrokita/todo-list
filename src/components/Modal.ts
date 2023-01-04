@@ -1,6 +1,7 @@
 import { Component } from './Component';
 import { ModalEvent, TModal } from '../types';
 import { ErrorIsEmpty, ErrorMaxLength } from '../errors';
+import { Autobind } from '../decorators';
 
 const ID_TEMPLATE = 'modal';
 const ID_HOST = 'app';
@@ -33,15 +34,15 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
     }
 
     private attachEvents() {
-        this.element?.addEventListener('modal', this.modalHandler.bind(this), true);
+        this.element?.addEventListener('modal', this.modalHandler, true);
 
         if (this.closeButton && this.cancelButton && this.element) {
             [this.closeButton, this.cancelButton].forEach((button: HTMLElement) => {
-                button.addEventListener('click', this.toggleModal.bind(this));
+                button.addEventListener('click', this.toggleHandler);
             });
         }
-        this.form?.addEventListener('submit', this.saveHandler.bind(this));
-        this.saveButton?.addEventListener('click', this.saveHandler.bind(this));
+        this.form?.addEventListener('submit', this.saveHandler);
+        this.saveButton?.addEventListener('click', this.saveHandler);
     }
 
     private prepareButtons() {
@@ -69,6 +70,7 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
         this.header = this.element.querySelector(`#${ID_HEADER}`);
     }
 
+    @Autobind
     private modalHandler(event: ModalEvent) {
         if (event.detail) {
             this.modal = event.detail.modal;
@@ -78,7 +80,7 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
             this.clear();
         }
 
-        this.toggleModal();
+        this.toggleHandler();
     }
 
     private setContent() {
@@ -98,6 +100,7 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
         this.handler = (e: string) => e;
     }
 
+    @Autobind
     private saveHandler(event: Event) {
         event.preventDefault();
 
@@ -105,7 +108,7 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
 
         try {
             this.handler(this.inputName.value);
-            this.toggleModal();
+            this.toggleHandler();
         } catch (error) {
             if (!this.error) return;
 
@@ -122,7 +125,8 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
         }
     }
 
-    private toggleModal() {
+    @Autobind
+    private toggleHandler() {
         this.element?.classList.toggle(ACTIVE_MODAL);
 
         if (this.element?.classList.contains(ACTIVE_MODAL)) {

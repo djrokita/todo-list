@@ -1,6 +1,7 @@
 import { TModal, ModalPayload } from '../types';
 import { Task } from './Task';
 import { Component } from './Component';
+import { Autobind } from '../decorators';
 
 const ID_TEMPLATE = 'task-item';
 const ID_HOST = 'list-box';
@@ -62,25 +63,28 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
     }
 
     private attachEvents() {
-        this.removeButton?.addEventListener('click', this.removeHandler.bind(this));
-        this.editButton?.addEventListener('click', this.editHandler.bind(this));
-        this.checkButton?.addEventListener('click', this.checkHandler.bind(this));
+        this.removeButton?.addEventListener('click', this.removeHandler);
+        this.editButton?.addEventListener('click', this.editHandler);
+        this.checkButton?.addEventListener('click', this.checkHandler);
     }
 
+    @Autobind
     private removeHandler() {
         this.task.remove();
     }
 
+    @Autobind
     private checkHandler() {
         const status = this.task.status === 'active' ? 'completed' : 'active';
         this.task.status = status;
         this.update();
     }
 
+    @Autobind
     private editHandler() {
         const modalRef = <HTMLTemplateElement>document.querySelector('.modal');
         const modal: TModal = { header: 'Edit your task', value: this.task.name };
-        const detail: ModalPayload = { modal, handler: this.task.changeName.bind(this.task) };
+        const detail: ModalPayload = { modal, handler: this.task.changeName };
         const modalEvent = new CustomEvent('modal', { detail });
         modalRef?.dispatchEvent(modalEvent);
     }
