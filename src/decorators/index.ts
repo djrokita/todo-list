@@ -1,1 +1,2 @@
-export { Autobind } from './Autobind';
+export { withAutobind } from './withAutobind';
+// export { withErrorMessage } from './withErrorMessage';

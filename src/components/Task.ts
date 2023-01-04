@@ -3,7 +3,7 @@ import { generateID } from '../utils';
 import { Validation } from '../services';
 import { TaskItem } from './TaskItem';
 import { State } from './State';
-import { Autobind } from '../decorators';
+import { withAutobind } from '../decorators';
 
 export class Task implements ITask {
     id: string;
@@ -28,7 +28,7 @@ export class Task implements ITask {
         this._name = value;
     }
 
-    @Autobind
+    @withAutobind
     changeName(name: string) {
         this.validateName(name);
         this.name = name;

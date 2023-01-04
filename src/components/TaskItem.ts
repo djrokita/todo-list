@@ -1,7 +1,7 @@
 import { TModal, ModalPayload } from '../types';
 import { Task } from './Task';
 import { Component } from './Component';
-import { Autobind } from '../decorators';
+import { withAutobind } from '../decorators';
 
 const ID_TEMPLATE = 'task-item';
 const ID_HOST = 'list-box';
@@ -68,19 +68,19 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
         this.checkButton?.addEventListener('click', this.checkHandler);
     }
 
-    @Autobind
+    @withAutobind
     private removeHandler() {
         this.task.remove();
     }
 
-    @Autobind
+    @withAutobind
     private checkHandler() {
         const status = this.task.status === 'active' ? 'completed' : 'active';
         this.task.status = status;
         this.update();
     }
 
-    @Autobind
+    @withAutobind
     private editHandler() {
         const modalRef = <HTMLTemplateElement>document.querySelector('.modal');
         const modal: TModal = { header: 'Edit your task', value: this.task.name };

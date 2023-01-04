@@ -1,4 +1,4 @@
-export function Autobind(target: unknown, property: string, descriptor: PropertyDescriptor): PropertyDescriptor {
+export function withAutobind(target: unknown, property: string, descriptor: PropertyDescriptor): PropertyDescriptor {
     return {
         configurable: descriptor.configurable,
         enumerable: descriptor.enumerable,

@@ -1,12 +1,13 @@
 import { Component } from './Component';
 import { ErrorIsEmpty, ErrorMaxLength } from '../errors';
 import { Task } from './Task';
-import { Autobind } from '../decorators';
+import { withAutobind /*withErrorMessage*/ } from '../decorators';
 
 const ID_TEMPLATE = 'task-form';
 const ID_HOST = 'app';
 const IS_HIDDEN = 'is-hidden';
 
+// @withErrorMessage
 export class TaskForm extends Component<HTMLTemplateElement, HTMLFormElement> {
     inputNameElement?: HTMLInputElement | null;
     error?: HTMLParagraphElement | null;
@@ -17,7 +18,7 @@ export class TaskForm extends Component<HTMLTemplateElement, HTMLFormElement> {
         this.attachEvents();
     }
 
-    @Autobind
+    @withAutobind
     private submitHandler(event: Event) {
         event.preventDefault();
         this.resetError();

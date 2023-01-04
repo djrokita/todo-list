@@ -1,7 +1,7 @@
 import { Component } from './Component';
 import { ModalEvent, TModal } from '../types';
 import { ErrorIsEmpty, ErrorMaxLength } from '../errors';
-import { Autobind } from '../decorators';
+import { withAutobind } from '../decorators';
 
 const ID_TEMPLATE = 'modal';
 const ID_HOST = 'app';
@@ -70,7 +70,7 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
         this.header = this.element.querySelector(`#${ID_HEADER}`);
     }
 
-    @Autobind
+    @withAutobind
     private modalHandler(event: ModalEvent) {
         if (event.detail) {
             this.modal = event.detail.modal;
@@ -100,7 +100,7 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
         this.handler = (e: string) => e;
     }
 
-    @Autobind
+    @withAutobind
     private saveHandler(event: Event) {
         event.preventDefault();
 
@@ -125,7 +125,7 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
         }
     }
 
-    @Autobind
+    @withAutobind
     private toggleHandler() {
         this.element?.classList.toggle(ACTIVE_MODAL);
 
