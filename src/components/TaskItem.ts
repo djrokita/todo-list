@@ -17,7 +17,7 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
     nameElement: HTMLElement | null | undefined;
 
     constructor(private task: Task) {
-        super(ID_TEMPLATE, ID_HOST);
+        super(ID_TEMPLATE, ID_HOST, true);
         this.prepare();
     }
 
