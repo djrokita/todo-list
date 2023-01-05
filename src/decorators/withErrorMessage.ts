@@ -15,7 +15,7 @@ export function withErrorMessage<T extends BaseComponent>(constructorFunction: T
         }
 
         private prepareError() {
-            this.error = (<any>this).element?.querySelector('p');
+            this.error = (<any>this).element?.querySelector('.help.is-danger');
         }
 
         private resetError() {

@@ -1,7 +1,6 @@
 import { Component } from './Component';
 import { ModalEvent, TModal } from '../types';
-import { ErrorIsEmpty, ErrorMaxLength } from '../errors';
-import { withAutobind } from '../decorators';
+import { withAutobind, withErrorMessage } from '../decorators';
 
 const ID_TEMPLATE = 'modal';
 const ID_HOST = 'app';
@@ -12,8 +11,8 @@ const ID_INPUT_NAME = 'modal-input';
 const ID_FORM = 'modal-form';
 const ID_HEADER = 'modal-header';
 const ACTIVE_MODAL = 'is-active';
-const IS_HIDDEN = 'is-hidden';
 
+@withErrorMessage
 export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
     closeButton: HTMLElement | null = null;
     cancelButton: HTMLElement | null = null;
@@ -24,6 +23,7 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
     handler: (value: string) => void;
     form: HTMLFormElement | null = null;
     error?: HTMLParagraphElement | null;
+    validate: any;
 
     constructor() {
         super(ID_TEMPLATE, ID_HOST);
@@ -51,10 +51,6 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
         this.closeButton = this.element.querySelector(`#${ID_ClOSE_BUTTON}`);
         this.cancelButton = this.element.querySelector(`#${ID_CANCEL_BUTTON}`);
         this.saveButton = this.element.querySelector(`#${ID_SAVE_BUTTON}`);
-    }
-
-    private prepareError() {
-        this.error = this.form?.querySelector('p');
     }
 
     private prepareInputName() {
@@ -104,25 +100,19 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
     private saveHandler(event: Event) {
         event.preventDefault();
 
+        if (this.error) {
+            return this.validate(this.actionHandler);
+        }
+
+        return this.actionHandler();
+    }
+
+    @withAutobind
+    private actionHandler() {
         if (!this.inputName || !this.handler) return;
 
-        try {
-            this.handler(this.inputName.value);
-            this.toggleHandler();
-        } catch (error) {
-            if (!this.error) return;
-
-            let errorMessage = '';
-            this.error.classList.remove(IS_HIDDEN);
-
-            if (error instanceof ErrorIsEmpty || error instanceof ErrorMaxLength) {
-                errorMessage = error.message;
-            } else {
-                errorMessage = 'There is some error occured. Please check your input';
-            }
-
-            this.error.textContent = errorMessage;
-        }
+        this.handler(this.inputName.value);
+        this.toggleHandler();
     }
 
     @withAutobind
@@ -140,7 +130,6 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
         this.prepareButtons();
         this.prepareInputName();
         this.prepareHeader();
-        this.prepareError();
     }
 
     protected render() {
