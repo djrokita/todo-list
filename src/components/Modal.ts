@@ -1,5 +1,5 @@
 import { Component } from './Component';
-import { ModalEvent, TModal } from '../types';
+import { ModalEvent, TModal, ModalHandler, TaskPayload, TaskPriority } from '../types';
 import { withAutobind, withErrorMessage } from '../decorators';
 
 const ID_TEMPLATE = 'modal';
@@ -7,22 +7,30 @@ const ID_HOST = 'app';
 const ID_SAVE_BUTTON = 'modal-save';
 const ID_CANCEL_BUTTON = 'modal-cancel';
 const ID_ClOSE_BUTTON = 'modal-close';
-const ID_INPUT_NAME = 'modal-input';
+const ID_INPUT_NAME = 'modal-input__name';
+const ID_INPUT_START = 'modal-input__start';
+const ID_INPUT_END = 'modal-input__end';
+const ID_INPUT_PRIORITY = 'modal-input__priority';
 const ID_FORM = 'modal-form';
 const ID_HEADER = 'modal-header';
 const ACTIVE_MODAL = 'is-active';
 
+const DEAFULT_HANDLER = (payload: TaskPayload) => console.log(payload);
+
 @withErrorMessage
 export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
-    closeButton: HTMLElement | null = null;
-    cancelButton: HTMLElement | null = null;
-    saveButton: HTMLElement | null = null;
-    inputName: HTMLInputElement | null = null;
-    header: HTMLParagraphElement | null = null;
-    modal: TModal | null = null;
-    handler: (value: string) => void;
-    form: HTMLFormElement | null = null;
-    error?: HTMLParagraphElement | null;
+    closeButton: HTMLElement;
+    cancelButton: HTMLElement;
+    saveButton: HTMLElement;
+    taskName: HTMLInputElement;
+    startDate: HTMLInputElement;
+    endDate: HTMLInputElement;
+    priority: HTMLSelectElement;
+    header: HTMLParagraphElement;
+    modal: TModal | null;
+    handler: ModalHandler;
+    form: HTMLFormElement;
+    error?: HTMLParagraphElement;
     validate: any;
 
     constructor() {
@@ -30,7 +38,7 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
 
         this.prepare();
         this.attachEvents();
-        this.handler = (e: string) => e;
+        this.handler = DEAFULT_HANDLER;
     }
 
     private attachEvents() {
@@ -48,22 +56,25 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
     private prepareButtons() {
         if (!this.element) return;
 
-        this.closeButton = this.element.querySelector(`#${ID_ClOSE_BUTTON}`);
-        this.cancelButton = this.element.querySelector(`#${ID_CANCEL_BUTTON}`);
-        this.saveButton = this.element.querySelector(`#${ID_SAVE_BUTTON}`);
+        this.closeButton = this.element.querySelector(`#${ID_ClOSE_BUTTON}`)!;
+        this.cancelButton = this.element.querySelector(`#${ID_CANCEL_BUTTON}`)!;
+        this.saveButton = this.element.querySelector(`#${ID_SAVE_BUTTON}`)!;
     }
 
-    private prepareInputName() {
+    private prepareInputs() {
         if (!this.element) return;
 
-        this.form = this.element.querySelector(`#${ID_FORM}`);
-        this.inputName = this.element.querySelector(`#${ID_INPUT_NAME}`);
+        this.form = this.element.querySelector(`#${ID_FORM}`)!;
+        this.taskName = this.element.querySelector(`#${ID_INPUT_NAME}`)!;
+        this.startDate = this.element.querySelector(`#${ID_INPUT_START}`)!;
+        this.endDate = this.element.querySelector(`#${ID_INPUT_END}`)!;
+        this.priority = this.element.querySelector(`#${ID_INPUT_PRIORITY}`)!;
     }
 
     private prepareHeader() {
         if (!this.element) return;
 
-        this.header = this.element.querySelector(`#${ID_HEADER}`);
+        this.header = this.element.querySelector(`#${ID_HEADER}`)!;
     }
 
     @withAutobind
@@ -80,10 +91,32 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
     }
 
     private setContent() {
-        if (!this.header || !this.modal || !this.inputName) return;
+        if (!this.modal) return;
 
-        this.inputName.value = this.modal.value;
-        this.header.textContent = this.modal.header;
+        this.setHeader();
+
+        this.taskName.value = this.modal.name;
+        this.startDate.valueAsDate = new Date(this.modal.start);
+        this.endDate.valueAsDate = new Date(this.modal.end);
+        this.priority.value = this.modal.priority;
+    }
+
+    private setHeader() {
+        if (!this.header) return;
+        let header: string;
+
+        switch (this.modal?.type) {
+            case 'edit':
+                header = 'Edit your task';
+                break;
+            case 'create':
+                header = 'Setup your task';
+                break;
+            default:
+                header = 'Default modal';
+        }
+
+        this.header.textContent = header;
     }
 
     private clear() {
@@ -93,7 +126,7 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
             this.error.textContent = '';
         }
 
-        this.handler = (e: string) => e;
+        this.handler = DEAFULT_HANDLER;
     }
 
     @withAutobind
@@ -109,9 +142,15 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
 
     @withAutobind
     private actionHandler() {
-        if (!this.inputName || !this.handler) return;
+        const payload: TaskPayload = {
+            name: this.taskName.value!,
+            start: this.startDate.value!,
+            end: this.endDate.value!,
+            // priority: <TaskPriority>this.priority.value,
+            priority: 'high',
+        };
 
-        this.handler(this.inputName.value);
+        this.handler(payload);
         this.toggleHandler();
     }
 
@@ -120,7 +159,7 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
         this.element?.classList.toggle(ACTIVE_MODAL);
 
         if (this.element?.classList.contains(ACTIVE_MODAL)) {
-            this.inputName?.focus();
+            this.taskName?.focus();
         } else {
             this.clear();
         }
@@ -128,7 +167,7 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
 
     protected prepare() {
         this.prepareButtons();
-        this.prepareInputName();
+        this.prepareInputs();
         this.prepareHeader();
     }
 

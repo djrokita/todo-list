@@ -1,9 +1,12 @@
 import { Task } from './Task';
 
+type CallBackFn = () => unknown;
+
 export class State {
     private static instance: State;
     _tasks: Record<string, Task> = {};
     private host: HTMLElement | null;
+    private listeners: Array<CallBackFn> = [];
 
     static getInstance() {
         if (this.instance) {
@@ -19,13 +22,21 @@ export class State {
         return this._tasks;
     }
 
+    subscribe(callback: () => unknown) {
+        this.listeners.push(callback);
+    }
+
     addTask(task: Task) {
-        if (!Object.prototype.hasOwnProperty.call(this._tasks, task.id)) {
+        if (!(task.id in this._tasks)) {
             this._tasks[task.id] = task;
         }
 
-        if (this._tasks[task.id] instanceof Task) {
-            return true;
+        this.callListeners();
+    }
+
+    getTask(id: string) {
+        if (this._tasks[id] instanceof Task) {
+            return this._tasks[id];
         }
     }
 
@@ -34,10 +45,16 @@ export class State {
             delete this._tasks[id];
         }
 
+        this.callListeners();
+
         return !Object.prototype.hasOwnProperty.call(this._tasks, id);
     }
 
     private constructor() {
         this.host = document.getElementById('app');
+    }
+
+    private callListeners() {
+        this.listeners.forEach((cb: CallBackFn) => cb());
     }
 }

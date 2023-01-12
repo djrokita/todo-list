@@ -83,8 +83,14 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
     @withAutobind
     private editHandler() {
         const modalRef = <HTMLTemplateElement>document.querySelector('.modal');
-        const modal: TModal = { header: 'Edit your task', value: this.task.name };
-        const detail: ModalPayload = { modal, handler: this.task.changeName };
+        const modal: TModal = {
+            type: 'edit',
+            name: this.task.name,
+            start: this.task.startDate,
+            end: this.task.endDate,
+            priority: this.task.priority,
+        };
+        const detail: ModalPayload = { modal, handler: this.task.edit };
         const modalEvent = new CustomEvent('modal', { detail });
         modalRef?.dispatchEvent(modalEvent);
     }

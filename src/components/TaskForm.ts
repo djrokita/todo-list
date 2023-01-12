@@ -17,6 +17,14 @@ export class TaskForm extends Component<HTMLTemplateElement, HTMLFormElement> {
         this.attachEvents();
     }
 
+    unMount(): void {
+        this.destroy();
+    }
+
+    mount(): void {
+        this.attachElement(ID_HOST);
+    }
+
     @withAutobind
     private submitHandler(event: Event) {
         event.preventDefault();
@@ -30,10 +38,9 @@ export class TaskForm extends Component<HTMLTemplateElement, HTMLFormElement> {
 
     @withAutobind
     private createTask() {
-        if (!this.inputNameElement) return;
-
-        new Task(this.inputNameElement.value);
-        this.inputNameElement.value = '';
+        // if (!this.inputNameElement) return;
+        // new Task();
+        // this.inputNameElement.value = '';
     }
 
     private attachEvents() {
@@ -50,9 +57,5 @@ export class TaskForm extends Component<HTMLTemplateElement, HTMLFormElement> {
 
     protected render() {
         console.log('render');
-    }
-
-    destroy() {
-        console.log('destroying');
     }
 }

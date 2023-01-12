@@ -6,8 +6,14 @@ const ID_HOST = 'app';
 export class TaskList extends Component<HTMLTemplateElement, HTMLDivElement> {
     constructor() {
         super(ID_TEMPLATE, ID_HOST);
+    }
 
-        this.prepare();
+    unMount(): void {
+        this.destroy();
+    }
+
+    mount(): void {
+        this.attachElement(ID_HOST);
     }
 
     protected prepare() {

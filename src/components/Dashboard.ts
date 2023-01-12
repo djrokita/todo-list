@@ -1,19 +1,54 @@
 // import { BaseElement } from './BaseElement';
 
+import { Modal } from './Modal';
+import { State } from './State';
+import { TaskForm } from './TaskForm';
+import { TaskList } from './TaskList';
+import { TaskPanel } from './TaskPanel';
+import { Welcome } from './Welcome';
+
 export class Dashboard {
-    constructor(name: string, private _title: string) {
-        // super(name);
+    state: State;
+    form!: TaskForm;
+    list!: TaskList;
+    welcome!: Welcome;
+    panel!: TaskPanel;
+
+    constructor() {
+        this.state = State.getInstance();
+        this.prepareWelcome();
+        this.preparePanel();
+        this.prepareModal();
+        this.prepareView();
+        this.connect();
     }
 
-    set title(value: string) {
-        this._title = value;
+    private prepareWelcome() {
+        this.welcome = new Welcome();
     }
 
-    get title() {
-        return this._title;
+    private preparePanel() {
+        this.panel = new TaskPanel();
     }
 
-    // create() {
+    private prepareView(): void {
+        console.log('🚀 ~ file: Dashboard.ts:35 ~ Dashboard ~ prepareView ~ this.state.tasks', this.state.tasks);
 
-    // }
+        if (Object.keys(this.state.tasks).length) {
+            this.welcome.unMount();
+            this.panel.mount();
+            return;
+        }
+
+        this.panel.unMount();
+        this.welcome.mount();
+    }
+
+    private prepareModal() {
+        new Modal();
+    }
+
+    private connect() {
+        this.state.subscribe(this.prepareView.bind(this));
+    }
 }

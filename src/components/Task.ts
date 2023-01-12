@@ -1,4 +1,4 @@
-import { ITask, Status } from '../types';
+import { ITask, Status, TaskPayload, TaskPriority } from '../types';
 import { generateID } from '../utils';
 import { Validation } from '../services';
 import { TaskItem } from './TaskItem';
@@ -7,17 +7,20 @@ import { withAutobind } from '../decorators';
 
 export class Task implements ITask {
     id: string;
+    _name = '';
     status: Status;
     ref: TaskItem | null = null;
     private state: State;
+    priority: TaskPriority = 'medium';
+    startDate: string;
+    endDate: string;
 
-    constructor(private _name: string) {
-        this.validateName(_name);
+    constructor() {
         this.id = generateID();
-        this.name = _name.trim();
         this.status = 'active';
         this.state = State.getInstance();
-        this.getInstance();
+        this.startDate = new Date().toDateString();
+        this.endDate = new Date().toDateString();
     }
 
     get name() {
@@ -25,14 +28,23 @@ export class Task implements ITask {
     }
 
     set name(value: string) {
-        this._name = value;
+        this.validateName(value);
+        this._name = value.trim();
     }
 
     @withAutobind
     changeName(name: string) {
         this.validateName(name);
         this.name = name;
-        this.ref?.update();
+    }
+
+    @withAutobind
+    edit({ name, start, end, priority }: TaskPayload) {
+        this.validateName(name);
+        this.name = name;
+        this.priority = priority;
+        this.endDate = end;
+        this.ref.update();
     }
 
     private validateName(name: string): void {
@@ -41,11 +53,20 @@ export class Task implements ITask {
     }
 
     private getInstance() {
-        const isStored = this.state.addTask(this);
-
-        if (isStored) {
+        if (this.state.getTask(this.id)) {
             this.ref = new TaskItem(this);
         }
+    }
+
+    @withAutobind
+    saveTask(payload: TaskPayload) {
+        this.name = payload.name;
+        this.startDate = payload.start;
+        this.endDate = payload.end;
+        this.priority = payload.priority;
+
+        this.state.addTask(this);
+        this.getInstance();
     }
 
     remove() {
