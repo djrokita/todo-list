@@ -11,10 +11,10 @@ const ID_EDIT_BUTTON = 'task-edit';
 const ID_CHECK_BUTTON = 'task-check';
 
 export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
-    editButton: HTMLElement | null = null;
-    removeButton: HTMLElement | null = null;
-    checkButton: HTMLElement | null = null;
-    nameElement: HTMLElement | null | undefined;
+    editButton: HTMLElement;
+    removeButton: HTMLElement;
+    checkButton: HTMLElement;
+    nameElement: HTMLElement;
 
     constructor(private task: Task) {
         super(ID_TEMPLATE, ID_HOST, true);

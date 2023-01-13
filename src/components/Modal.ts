@@ -1,6 +1,8 @@
 import { Component } from './Component';
 import { ModalEvent, TModal, ModalHandler, TaskPayload, TaskPriority } from '../types';
 import { withAutobind, withErrorMessage } from '../decorators';
+import { RENDERER } from '../renderers';
+import { PRIORITIES } from '../constants';
 
 const ID_TEMPLATE = 'modal';
 const ID_HOST = 'app';
@@ -69,6 +71,13 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
         this.startDate = this.element.querySelector(`#${ID_INPUT_START}`)!;
         this.endDate = this.element.querySelector(`#${ID_INPUT_END}`)!;
         this.priority = this.element.querySelector(`#${ID_INPUT_PRIORITY}`)!;
+
+        this.preparePrioritySelect();
+    }
+
+    private preparePrioritySelect() {
+        const optionElemens = RENDERER.getSelectOption(PRIORITIES);
+        optionElemens.forEach((option: HTMLOptionElement) => this.priority.append(option));
     }
 
     private prepareHeader() {
@@ -146,8 +155,7 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
             name: this.taskName.value!,
             start: this.startDate.value!,
             end: this.endDate.value!,
-            // priority: <TaskPriority>this.priority.value,
-            priority: 'high',
+            priority: <TaskPriority>this.priority.value,
         };
 
         this.handler(payload);

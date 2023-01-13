@@ -1,5 +1,3 @@
-// import { BaseElement } from './BaseElement';
-
 import { Modal } from './Modal';
 import { State } from './State';
 import { TaskForm } from './TaskForm';
@@ -32,8 +30,6 @@ export class Dashboard {
     }
 
     private prepareView(): void {
-        console.log('🚀 ~ file: Dashboard.ts:35 ~ Dashboard ~ prepareView ~ this.state.tasks', this.state.tasks);
-
         if (Object.keys(this.state.tasks).length) {
             this.welcome.unMount();
             this.panel.mount();
