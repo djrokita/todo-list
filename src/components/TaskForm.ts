@@ -1,15 +1,17 @@
 import { Component } from './Component';
-import { Task } from './Task';
-import { withAutobind, withErrorMessage } from '../decorators';
+import { withErrorMessage } from '../decorators';
+import { openModalHandler } from '../utils';
 
 const ID_TEMPLATE = 'task-form';
 const ID_HOST = 'app';
+const ID_NEW = 'task-new';
 
 @withErrorMessage
 export class TaskForm extends Component<HTMLTemplateElement, HTMLFormElement> {
-    inputNameElement?: HTMLInputElement | null;
-    error?: HTMLParagraphElement | null;
+    inputNameElement?: HTMLInputElement;
+    error?: HTMLParagraphElement;
     validate: any;
+    addButton: HTMLButtonElement;
 
     constructor() {
         super(ID_TEMPLATE, ID_HOST);
@@ -25,34 +27,21 @@ export class TaskForm extends Component<HTMLTemplateElement, HTMLFormElement> {
         this.attachElement(ID_HOST);
     }
 
-    @withAutobind
-    private submitHandler(event: Event) {
-        event.preventDefault();
-
-        if (this.error) {
-            return this.validate(this.createTask);
-        }
-
-        return this.createTask();
-    }
-
-    @withAutobind
-    private createTask() {
-        // if (!this.inputNameElement) return;
-        // new Task();
-        // this.inputNameElement.value = '';
-    }
-
     private attachEvents() {
-        this.element?.addEventListener('submit', this.submitHandler);
+        this.addButton?.addEventListener('click', openModalHandler);
     }
 
     private prepareInputs() {
         this.inputNameElement = this.element?.querySelector('input');
     }
 
+    private prepareButtons() {
+        this.addButton = this.element?.querySelector(`#${ID_NEW}`);
+    }
+
     protected prepare() {
         this.prepareInputs();
+        this.prepareButtons();
     }
 
     protected render() {

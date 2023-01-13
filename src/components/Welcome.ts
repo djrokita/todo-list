@@ -1,7 +1,5 @@
 import { Component } from './Component';
-import { withAutobind } from '../decorators';
-import { TModal, ModalPayload } from '../types';
-import { Task } from './Task';
+import { openModalHandler } from '../utils';
 
 const ID_TEMPLATE = 'welcome';
 const ID_HOST = 'app';
@@ -37,25 +35,7 @@ export class Welcome extends Component<HTMLTemplateElement, HTMLDivElement> {
     }
 
     private attachEvent() {
-        this.button.addEventListener('click', this.buttonHandler);
-    }
-
-    @withAutobind
-    private buttonHandler() {
-        const modalRef = <HTMLTemplateElement>document.querySelector('.modal');
-
-        const task = new Task();
-
-        const modal: TModal = {
-            type: 'create',
-            name: task.name,
-            start: task.startDate,
-            end: task.endDate,
-            priority: task.priority,
-        };
-        const detail: ModalPayload = { modal, handler: task.saveTask };
-        const modalEvent = new CustomEvent('modal', { detail });
-        modalRef?.dispatchEvent(modalEvent);
+        this.button.addEventListener('click', openModalHandler);
     }
 
     protected render() {
