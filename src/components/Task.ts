@@ -1,26 +1,27 @@
-import { ITask, Status, TaskPayload, TaskPriority } from '../types';
+import { Status, TaskPayload, TaskPriority } from '../types';
 import { generateID } from '../utils';
 import { Validation } from '../services';
 import { TaskItem } from './TaskItem';
 import { State } from './State';
 import { withAutobind } from '../decorators';
 
-export class Task implements ITask {
+export class Task {
     id: string;
     _name = '';
     status: Status;
     ref: TaskItem | null = null;
     private state: State;
     priority: TaskPriority = 'medium';
-    startDate: string;
-    endDate: string;
+    _startDate: string;
+    _endDate: string;
+    errors: any[] = [];
 
     constructor() {
         this.id = generateID();
         this.status = 'active';
         this.state = State.getInstance();
-        this.startDate = new Date().toDateString();
-        this.endDate = new Date().toDateString();
+        this._startDate = new Date().toDateString();
+        this._endDate = new Date().toDateString();
     }
 
     get name() {
@@ -28,28 +29,63 @@ export class Task implements ITask {
     }
 
     set name(value: string) {
-        this.validateName(value);
-        this._name = value.trim();
+        if (this.validateName(value)) {
+            this._name = value.trim();
+        }
+    }
+
+    get startDate() {
+        return this._startDate;
+    }
+
+    set startDate(value: string) {
+        if (this.endDate) {
+            this.validateDate(value, this.endDate);
+        }
+        this._startDate = value;
+    }
+
+    get endDate() {
+        return this._endDate;
+    }
+
+    set endDate(value: string) {
+        this.validateDate(this.startDate, value);
+        this._startDate = value;
     }
 
     @withAutobind
     changeName(name: string) {
-        this.validateName(name);
         this.name = name;
     }
 
     @withAutobind
     edit({ name, start, end, priority }: TaskPayload) {
-        this.validateName(name);
+        this.errors = [];
+
         this.name = name;
         this.priority = priority;
         this.endDate = end;
         this.ref.update();
+
+        return this.errors;
     }
 
-    private validateName(name: string): void {
-        Validation.isEmpty(name);
-        Validation.hasMaxLenght(name, 10);
+    private validateName(name: string) {
+        const isEmptyError = Validation.isEmpty(name);
+        const maxLengthError = Validation.hasMaxLenght(name, 10);
+
+        isEmptyError && this.errors.push(isEmptyError);
+        maxLengthError && this.errors.push(maxLengthError);
+
+        return this.errors.length === 0;
+    }
+
+    private validateDate(start: string, end: string) {
+        const isDateError = Validation.idEndDateCorrect(start, end);
+        isDateError && this.errors.push(isDateError);
+
+        return this.errors.length === 0;
     }
 
     private getInstance() {
@@ -60,10 +96,16 @@ export class Task implements ITask {
 
     @withAutobind
     saveTask(payload: TaskPayload) {
+        this.errors = [];
+
         this.name = payload.name;
         this.startDate = payload.start;
         this.endDate = payload.end;
         this.priority = payload.priority;
+
+        if (this.errors.length) {
+            return this.errors;
+        }
 
         this.state.addTask(this);
         this.getInstance();

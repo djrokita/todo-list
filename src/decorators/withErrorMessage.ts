@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ErrorIsEmpty, ErrorMaxLength } from '../errors';
+import { ErrorIsEmpty, ErrorMaxLength, ErrorEndDate } from '../errors';
 
 type BaseComponent = new (...args: any[]) => object;
 
@@ -7,42 +7,43 @@ const IS_HIDDEN = 'is-hidden';
 
 export function withErrorMessage<T extends BaseComponent>(constructorFunction: T) {
     return class extends constructorFunction {
-        error?: HTMLParagraphElement | null;
+        errorLabels?: Record<string, HTMLParagraphElement> = {};
 
         constructor(..._: any[]) {
             super();
-            this.prepareError();
         }
 
-        private prepareError() {
-            this.error = (<any>this).element?.querySelector('.help.is-danger');
+        private prepareError(id: string) {
+            if (id in this.errorLabels) return;
+
+            const errorLabel = (<any>this).element?.querySelector(`#${id}`);
+
+            this.errorLabels[id] = errorLabel;
         }
 
         private resetError() {
-            if (!this.error) return;
+            const labels = Object.values(this.errorLabels);
 
-            this.error.classList.add(IS_HIDDEN);
-            this.error.textContent = '';
+            if (labels.length) {
+                Object.values(this.errorLabels).forEach((label: HTMLParagraphElement) => {
+                    label.classList.add(IS_HIDDEN);
+                    label.textContent = '';
+                });
+            }
         }
 
-        private validate(handler: () => void) {
+        private validate(handler: () => any[]) {
             this.resetError();
 
-            try {
-                handler();
-            } catch (error) {
-                if (!this.error) return;
+            const errors = handler();
 
-                let errorMessage = '';
-                this.error.classList.remove(IS_HIDDEN);
-
-                if (error instanceof ErrorIsEmpty || error instanceof ErrorMaxLength) {
-                    errorMessage = error.message;
-                } else {
-                    errorMessage = 'There is some error occured. Please check your input';
-                }
-
-                this.error.textContent = errorMessage;
+            if (errors) {
+                errors.forEach((error: any) => {
+                    // this.resetError(error.id);
+                    this.prepareError(error.id);
+                    this.errorLabels[error.id].classList.remove(IS_HIDDEN);
+                    this.errorLabels[error.id].textContent = error.message;
+                });
             }
         }
     };

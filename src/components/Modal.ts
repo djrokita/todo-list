@@ -17,7 +17,7 @@ const ID_FORM = 'modal-form';
 const ID_HEADER = 'modal-header';
 const ACTIVE_MODAL = 'is-active';
 
-const DEAFULT_HANDLER = (payload: TaskPayload) => console.log(payload);
+const DEAFULT_HANDLER = (payload: TaskPayload): any[] => [];
 
 @withErrorMessage
 export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
@@ -32,7 +32,7 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
     modal: TModal | null;
     handler: ModalHandler;
     form: HTMLFormElement;
-    error?: HTMLParagraphElement;
+    // error?: HTMLParagraphElement;
     validate: any;
 
     constructor() {
@@ -129,24 +129,18 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
     }
 
     private clear() {
-        this.modal = null;
-
-        if (this.error) {
-            this.error.textContent = '';
-        }
-
-        this.handler = DEAFULT_HANDLER;
+        //     this.modal = null;
+        //     if (this.error) {
+        //         this.error.textContent = '';
+        //     }
+        //     this.handler = DEAFULT_HANDLER;
     }
 
     @withAutobind
     private saveHandler(event: Event) {
         event.preventDefault();
 
-        if (this.error) {
-            return this.validate(this.actionHandler);
-        }
-
-        return this.actionHandler();
+        return this.validate(this.actionHandler);
     }
 
     @withAutobind
@@ -158,8 +152,12 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
             priority: <TaskPriority>this.priority.value,
         };
 
-        this.handler(payload);
-        this.toggleHandler();
+        const errors = this.handler(payload);
+        if (!errors) {
+            this.toggleHandler();
+        }
+
+        return errors;
     }
 
     @withAutobind

@@ -34,7 +34,7 @@ type ModalType = 'create' | 'edit';
 
 export type TaskPriority = TaskPriorityLow | TaskPriorityMedium | TaskPriorityHigh;
 
-export type ModalHandler = (payload: TaskPayload) => void;
+export type ModalHandler = (payload: TaskPayload) => any[];
 export type ModalPayload = { modal: TModal; handler: ModalHandler };
 export type EditNamePayload = { id: string; name: string };
 

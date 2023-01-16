@@ -1,13 +1,9 @@
-// import { generateID } from '../utils';
-
 export abstract class Component<T extends HTMLElement, U extends HTMLElement> {
-    // protected _id;
     protected template?: HTMLTemplateElement;
     protected host?: U;
     protected element?: T;
 
     constructor(templateId: string, hostId: string, private ahead = false) {
-        // this._id = generateID();
         this.prepareNode(templateId, hostId);
     }
 
