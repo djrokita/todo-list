@@ -33,8 +33,8 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
     modal: TModal | null;
     handler: ModalHandler;
     form: HTMLFormElement;
-    // error?: HTMLParagraphElement;
     validate: any;
+    resetError: () => void;
 
     constructor() {
         super(ID_TEMPLATE, ID_HOST);
@@ -118,9 +118,11 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
         switch (this.modal?.type) {
             case 'edit':
                 header = 'Edit your task';
+                this.startDate.disabled = true;
                 break;
             case 'create':
                 header = 'Setup your task';
+                this.startDate.disabled = false;
                 break;
             default:
                 header = 'Default modal';
@@ -130,11 +132,8 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
     }
 
     private clear() {
-        //     this.modal = null;
-        //     if (this.error) {
-        //         this.error.textContent = '';
-        //     }
-        //     this.handler = DEAFULT_HANDLER;
+        this.modal = null;
+        this.resetError();
     }
 
     @withAutobind

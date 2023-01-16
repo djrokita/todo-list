@@ -52,7 +52,7 @@ export class Task {
 
     set endDate(value: string) {
         this.validateDate(this.startDate, value);
-        this._startDate = value;
+        this._endDate = value;
     }
 
     @withAutobind
@@ -61,7 +61,7 @@ export class Task {
     }
 
     @withAutobind
-    edit({ name, start, end, priority }: TaskPayload) {
+    edit({ name, end, priority }: TaskPayload) {
         this.errors = [];
 
         this.name = name;
