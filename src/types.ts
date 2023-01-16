@@ -1,3 +1,5 @@
+import { BaseError } from './errors';
+
 export interface ITask {
     id: string;
     _name: string;
@@ -34,7 +36,7 @@ type ModalType = 'create' | 'edit';
 
 export type TaskPriority = TaskPriorityLow | TaskPriorityMedium | TaskPriorityHigh;
 
-export type ModalHandler = (payload: TaskPayload) => any[];
+export type ModalHandler = (payload: TaskPayload) => BaseError[];
 export type ModalPayload = { modal: TModal; handler: ModalHandler };
 export type EditNamePayload = { id: string; name: string };
 

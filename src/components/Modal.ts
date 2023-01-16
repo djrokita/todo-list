@@ -3,6 +3,7 @@ import { ModalEvent, TModal, ModalHandler, TaskPayload, TaskPriority } from '../
 import { withAutobind, withErrorMessage } from '../decorators';
 import { RENDERER } from '../renderers';
 import { PRIORITIES } from '../constants';
+import { BaseError } from '../errors';
 
 const ID_TEMPLATE = 'modal';
 const ID_HOST = 'app';
@@ -17,7 +18,7 @@ const ID_FORM = 'modal-form';
 const ID_HEADER = 'modal-header';
 const ACTIVE_MODAL = 'is-active';
 
-const DEAFULT_HANDLER = (payload: TaskPayload): any[] => [];
+const DEAFULT_HANDLER = (payload: TaskPayload): BaseError[] => [];
 
 @withErrorMessage
 export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
@@ -153,7 +154,8 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
         };
 
         const errors = this.handler(payload);
-        if (!errors) {
+
+        if (!errors.length) {
             this.toggleHandler();
         }
 

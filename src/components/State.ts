@@ -27,6 +27,8 @@ export class State {
     }
 
     addTask(task: Task) {
+        if (task.errors.length) return;
+
         if (!(task.id in this._tasks)) {
             this._tasks[task.id] = task;
         }

@@ -4,6 +4,7 @@ import { Validation } from '../services';
 import { TaskItem } from './TaskItem';
 import { State } from './State';
 import { withAutobind } from '../decorators';
+import { BaseError } from '../errors';
 
 export class Task {
     id: string;
@@ -14,7 +15,7 @@ export class Task {
     priority: TaskPriority = 'medium';
     _startDate: string;
     _endDate: string;
-    errors: any[] = [];
+    errors: BaseError[] = [];
 
     constructor() {
         this.id = generateID();
@@ -102,13 +103,10 @@ export class Task {
         this.startDate = payload.start;
         this.endDate = payload.end;
         this.priority = payload.priority;
-
-        if (this.errors.length) {
-            return this.errors;
-        }
-
         this.state.addTask(this);
         this.getInstance();
+
+        return this.errors;
     }
 
     remove() {

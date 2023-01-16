@@ -1,7 +1,12 @@
+import { ID_ERROR_NAME } from '../constants';
+import { BaseError } from './BaseError';
+
 const MESSAGE = "Task's name is required";
 
-export class ErrorIsEmpty extends Error {
+export class ErrorIsEmpty extends BaseError {
     constructor() {
-        super(MESSAGE);
+        super();
+        this.id = ID_ERROR_NAME;
+        this.message = MESSAGE;
     }
 }

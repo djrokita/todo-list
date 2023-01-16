@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ErrorIsEmpty, ErrorMaxLength, ErrorEndDate } from '../errors';
+import { BaseError } from '../errors';
 
 type BaseComponent = new (...args: any[]) => object;
 
@@ -35,14 +35,13 @@ export function withErrorMessage<T extends BaseComponent>(constructorFunction: T
         private validate(handler: () => any[]) {
             this.resetError();
 
-            const errors = handler();
+            const errors: BaseError[] = handler();
 
-            if (errors) {
-                errors.forEach((error: any) => {
-                    // this.resetError(error.id);
-                    this.prepareError(error.id);
-                    this.errorLabels[error.id].classList.remove(IS_HIDDEN);
-                    this.errorLabels[error.id].textContent = error.message;
+            if (errors.length) {
+                errors.forEach(({ id, message }: BaseError) => {
+                    this.prepareError(id);
+                    this.errorLabels[id].classList.remove(IS_HIDDEN);
+                    this.errorLabels[id].textContent = message;
                 });
             }
         }
