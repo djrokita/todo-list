@@ -1,3 +1,5 @@
+import { STORAGE_KEY_TASKS } from '../constants';
+import { TaskMeta, TaskPayload } from '../types';
 import { Task } from './Task';
 
 type CallBackFn = () => unknown;
@@ -7,6 +9,7 @@ export class State {
     _tasks: Record<string, Task> = {};
     private host: HTMLElement | null;
     private listeners: Array<CallBackFn> = [];
+    private storage: Array<TaskPayload> = [];
 
     static getInstance() {
         if (this.instance) {
@@ -33,7 +36,25 @@ export class State {
             this._tasks[task.id] = task;
         }
 
+        this.storeTask(task.id);
         this.callListeners();
+    }
+
+    storeTask(id: string) {
+        const task = this.tasks[id];
+
+        if (task) {
+            const taskMeta: TaskMeta = {
+                name: task.name,
+                start: task.startDate,
+                end: task.endDate,
+                priority: task.priority,
+                status: task.status,
+            };
+
+            this.storage.push(taskMeta);
+            localStorage.setItem(STORAGE_KEY_TASKS, JSON.stringify(this.storage));
+        }
     }
 
     getTask(id: string) {

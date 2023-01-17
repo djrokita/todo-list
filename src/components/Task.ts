@@ -1,4 +1,4 @@
-import { Status, TaskPayload, TaskPriority } from '../types';
+import { Status, TaskMeta, TaskPayload, TaskPriority } from '../types';
 import { generateID } from '../utils';
 import { Validation } from '../services';
 import { TaskItem } from './TaskItem';
@@ -17,12 +17,28 @@ export class Task {
     _endDate: string;
     errors: BaseError[] = [];
 
-    constructor() {
+    static restoreTask(taskMeta: TaskMeta) {
+        return new Task(taskMeta);
+    }
+
+    constructor(metaData?: TaskMeta) {
         this.id = generateID();
-        this.status = 'active';
         this.state = State.getInstance();
-        this._startDate = new Date().toDateString();
-        this._endDate = new Date().toDateString();
+
+        if (metaData) {
+            this.name = metaData.name;
+            this.status = metaData.status;
+            this.priority = metaData.priority;
+            this.startDate = metaData.start;
+            this.endDate = metaData.end;
+
+            this.state.addTask(this);
+            this.getInstance();
+
+            return;
+        }
+
+        this.generateInitData();
     }
 
     get name() {
@@ -93,6 +109,12 @@ export class Task {
         if (this.state.getTask(this.id)) {
             this.ref = new TaskItem(this);
         }
+    }
+
+    private generateInitData() {
+        this.status = 'active';
+        this._startDate = new Date().toDateString();
+        this._endDate = new Date().toDateString();
     }
 
     @withAutobind

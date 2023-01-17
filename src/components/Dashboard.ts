@@ -1,5 +1,8 @@
+import { STORAGE_KEY_TASKS } from '../constants';
+import { TaskMeta } from '../types';
 import { Modal } from './Modal';
 import { State } from './State';
+import { Task } from './Task';
 import { TaskForm } from './TaskForm';
 import { TaskList } from './TaskList';
 import { TaskPanel } from './TaskPanel';
@@ -30,6 +33,8 @@ export class Dashboard {
     }
 
     private prepareView(): void {
+        this.retrieveStorageData();
+
         if (Object.keys(this.state.tasks).length) {
             this.welcome.unMount();
             this.panel.mount();
@@ -46,5 +51,14 @@ export class Dashboard {
 
     private connect() {
         this.state.subscribe(this.prepareView.bind(this));
+    }
+
+    private retrieveStorageData() {
+        const storedTasks = localStorage.getItem(STORAGE_KEY_TASKS);
+
+        if (storedTasks) {
+            const metaTasks: TaskMeta[] = JSON.parse(storedTasks);
+            metaTasks.forEach((meta: TaskMeta) => Task.restoreTask(meta));
+        }
     }
 }

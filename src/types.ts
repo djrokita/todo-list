@@ -26,6 +26,8 @@ export type TaskPayload = {
     priority: TaskPriority;
 };
 
+export type TaskMeta = TaskPayload & { status: Status };
+
 type TaskPriorityLow = 'low';
 type TaskPriorityMedium = 'medium';
 type TaskPriorityHigh = 'high';
