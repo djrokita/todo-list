@@ -29,15 +29,19 @@ export class State {
         this.listeners.push(callback);
     }
 
-    addTask(task: Task) {
+    addTask(task: Task, shouldUpdate = true) {
+        this.saveTask(task);
+        this.storeTask(task.id);
+
+        shouldUpdate && this.callListeners();
+    }
+
+    private saveTask(task: Task) {
         if (task.errors.length) return;
 
         if (!(task.id in this._tasks)) {
             this._tasks[task.id] = task;
         }
-
-        this.storeTask(task.id);
-        this.callListeners();
     }
 
     storeTask(id: string) {

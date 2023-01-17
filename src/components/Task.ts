@@ -32,7 +32,7 @@ export class Task {
             this.startDate = metaData.start;
             this.endDate = metaData.end;
 
-            this.state.addTask(this);
+            this.state.addTask(this, false);
             this.getInstance();
 
             return;

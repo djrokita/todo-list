@@ -20,6 +20,7 @@ export class Dashboard {
         this.prepareWelcome();
         this.preparePanel();
         this.prepareModal();
+        this.retrieveStorageData();
         this.prepareView();
         this.connect();
     }
@@ -33,8 +34,6 @@ export class Dashboard {
     }
 
     private prepareView(): void {
-        this.retrieveStorageData();
-
         if (Object.keys(this.state.tasks).length) {
             this.welcome.unMount();
             this.panel.mount();
