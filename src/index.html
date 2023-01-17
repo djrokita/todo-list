@@ -118,22 +118,23 @@
           <div class="control is-expanded">
             <div class="field has-addons">
               <div class="control">
-
                 <button class="button is-success is-outlined" id="task-check">
                   <span class="icon is-medium">
                     <i class="fa-solid fa-square-check"></i>
                   </span>
                 </button>
               </div>
+              <div class="control is-flex-shrink-2 is-flex is-align-items-center px-4" id="task-priority">
+              </div>
               <div class="control is-expanded is-flex is-align-items-center px-4">
                 <div class="block is-dark has-text-black" id="taskItem-name"></div>
               </div>
             </div>
           </div>
+
           <div class="control">
             <div class="field is-grouped">
               <div class="control">
-
                 <button class="button is-info is-outlined" id="task-edit">
                   <span class="icon is-medium">
                     <i class="fa-solid fa-pen"></i>
@@ -173,20 +174,20 @@
                 <div class="control mb-4">
                   <label class="label">Task name</label>
                   <input class="input is-primary" type="text" placeholder="Editted task name" id="modal-input__name">
-                  <p class="help is-danger is-hidden"></p>
+                  <p class="help is-danger is-hidden" id="modal-error__name"></p>
                 </div>
                 <div class="field is-grouped mb-4 is-justify-content-space-between">
                   <div class="control">
                     <label class="label">Start date</label>
                     <input class="input is-primary" type="date" id="modal-input__start">
-                    <p class="help is-danger is-hidden"></p>
+                    <p class="help is-danger is-hidden" id="modal-error__date"></p>
+
                   </div>
                   <div class="control">
                     <label class="label">End date</label>
                     <input class="input is-primary" type="date" required pattern="\d{4}-\d{2}-\d{2}"
                       id="modal-input__end">
-                    <p class="help is-danger is-hidden"></p>
-                  </div>
+                    </div>
                   <div class="control">
                     <label class="label">Priority</label>
                     <div class="select">

@@ -1,7 +1,7 @@
 export const PRIORITIES = {
     low: 'Low',
     medium: 'Medium',
-    high: 'high',
+    high: 'High',
 };
 
 export const ID_ERROR_NAME = 'modal-error__name';

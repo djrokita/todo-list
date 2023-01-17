@@ -2,6 +2,7 @@ import { TModal, ModalPayload } from '../types';
 import { Task } from './Task';
 import { Component } from './Component';
 import { withAutobind } from '../decorators';
+import { RENDERER } from '../renderers';
 
 const ID_TEMPLATE = 'task-item';
 const ID_HOST = 'list-box';
@@ -9,12 +10,14 @@ const ID_HOST = 'list-box';
 const ID_REMOVE_BUTTON = 'task-remove';
 const ID_EDIT_BUTTON = 'task-edit';
 const ID_CHECK_BUTTON = 'task-check';
+const ID_TAG_PRIORITY = 'task-priority';
 
 export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
     editButton: HTMLElement;
     removeButton: HTMLElement;
     checkButton: HTMLElement;
     nameElement: HTMLElement;
+    tagElement: HTMLElement;
 
     constructor(private task: Task) {
         super(ID_TEMPLATE, ID_HOST, true);
@@ -23,11 +26,13 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
 
     update() {
         this.prepareName();
+        this.prepareTag();
         this.adjustElementToStatus();
     }
 
     protected prepare() {
         this.prepareName();
+        this.prepareTag();
         this.prepareButtons();
         this.attachEvents();
     }
@@ -40,12 +45,19 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
         this.nameElement.textContent = this.task.name;
     }
 
-    private prepareButtons() {
-        if (this.element) {
-            this.removeButton = this.element.querySelector(`#${ID_REMOVE_BUTTON}`);
-            this.editButton = this.element.querySelector(`#${ID_EDIT_BUTTON}`);
-            this.checkButton = this.element.querySelector(`#${ID_CHECK_BUTTON}`);
+    private prepareTag() {
+        if (!this.tagElement) {
+            this.tagElement = this.element.querySelector(`#${ID_TAG_PRIORITY}`);
         }
+
+        const tag = RENDERER.getPriorityTag(this.task.priority);
+        this.tagElement.replaceChildren(tag);
+    }
+
+    private prepareButtons() {
+        this.removeButton = this.element.querySelector(`#${ID_REMOVE_BUTTON}`);
+        this.editButton = this.element.querySelector(`#${ID_EDIT_BUTTON}`);
+        this.checkButton = this.element.querySelector(`#${ID_CHECK_BUTTON}`);
     }
 
     private adjustElementToStatus() {
@@ -53,12 +65,14 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
             this.element?.classList.add('has-background-grey-lighter');
             this.nameElement?.classList.add('is-line-through');
             this.editButton?.classList.add('is-hidden');
+            this.tagElement.lastElementChild.classList.add('is-light');
         }
 
         if (this.task.status === 'active') {
             this.element?.classList.remove('has-background-grey-lighter');
             this.nameElement?.classList.remove('is-line-through');
             this.editButton?.classList.remove('is-hidden');
+            this.tagElement.lastElementChild.classList.remove('is-light');
         }
     }
 
