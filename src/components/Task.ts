@@ -56,9 +56,12 @@ export class Task {
     }
 
     set startDate(value: string) {
-        if (this.endDate) {
-            this.validateDate(value, this.endDate);
+        if (this.endDate && this.validateDate(value, this.endDate)) {
+            this._startDate = value;
+
+            return;
         }
+
         this._startDate = value;
     }
 
@@ -67,8 +70,9 @@ export class Task {
     }
 
     set endDate(value: string) {
-        this.validateDate(this.startDate, value);
-        this._endDate = value;
+        if (this.validateDate(this.startDate, value)) {
+            this._endDate = value;
+        }
     }
 
     @withAutobind
