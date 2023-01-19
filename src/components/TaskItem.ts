@@ -3,14 +3,17 @@ import { Task } from './Task';
 import { Component } from './Component';
 import { withAutobind } from '../decorators';
 import { RENDERER } from '../renderers';
+import { getDaysLeft } from '../utils';
 
 const ID_TEMPLATE = 'task-item';
 const ID_HOST = 'list-box';
 
+const ID_NAME = 'task-name';
 const ID_REMOVE_BUTTON = 'task-remove';
 const ID_EDIT_BUTTON = 'task-edit';
 const ID_CHECK_BUTTON = 'task-check';
 const ID_TAG_PRIORITY = 'task-priority';
+const ID_DAYS = 'task-days';
 
 export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
     editButton: HTMLElement;
@@ -18,6 +21,7 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
     checkButton: HTMLElement;
     nameElement: HTMLElement;
     tagElement: HTMLElement;
+    daysLeft: HTMLElement;
 
     constructor(private task: Task) {
         super(ID_TEMPLATE, ID_HOST, true);
@@ -27,18 +31,24 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
     update() {
         this.prepareName();
         this.prepareTag();
+        this.prepareDaysLeft();
         this.adjustElementToStatus();
+    }
+
+    show() {
+        this.attachElement(ID_HOST);
     }
 
     protected prepare() {
         this.prepareName();
         this.prepareTag();
+        this.prepareDaysLeft();
         this.prepareButtons();
         this.attachEvents();
     }
 
     private prepareName() {
-        this.nameElement = this.element?.querySelector('#taskItem-name');
+        this.nameElement = this.element?.querySelector(`#${ID_NAME}`);
 
         if (!this.nameElement) return;
 
@@ -54,6 +64,26 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
         this.tagElement.replaceChildren(tag);
     }
 
+    private prepareDaysLeft() {
+        if (!this.daysLeft) {
+            this.daysLeft = this.element.querySelector(`#${ID_DAYS}`);
+        }
+
+        const days = getDaysLeft(this.task.endDate, this.task.startDate);
+
+        let daysMessage: string;
+
+        if (days === 0) {
+            daysMessage = 'last day';
+        }
+
+        if (days) {
+            daysMessage = days.toString() + ' D';
+        }
+
+        this.daysLeft.textContent = daysMessage;
+    }
+
     private prepareButtons() {
         this.removeButton = this.element.querySelector(`#${ID_REMOVE_BUTTON}`);
         this.editButton = this.element.querySelector(`#${ID_EDIT_BUTTON}`);
@@ -65,6 +95,7 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
             this.element?.classList.add('has-background-grey-lighter');
             this.nameElement?.classList.add('is-line-through');
             this.editButton?.classList.add('is-hidden');
+            this.daysLeft?.classList.add('is-hidden');
             this.tagElement.lastElementChild.classList.add('is-light');
         }
 
@@ -72,6 +103,7 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
             this.element?.classList.remove('has-background-grey-lighter');
             this.nameElement?.classList.remove('is-line-through');
             this.editButton?.classList.remove('is-hidden');
+            this.daysLeft?.classList.remove('is-hidden');
             this.tagElement.lastElementChild.classList.remove('is-light');
         }
     }

@@ -21,3 +21,7 @@ export function openModalHandler() {
     const modalEvent = new CustomEvent('modal', { detail });
     modalRef?.dispatchEvent(modalEvent);
 }
+
+export function getDaysLeft(endDate: string, startDate: string) {
+    return Math.floor(new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 3600 * 24);
+}
