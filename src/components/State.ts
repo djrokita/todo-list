@@ -10,6 +10,7 @@ export class State {
     private host: HTMLElement | null;
     private listeners: Array<CallBackFn> = [];
     private storage: Array<TaskPayload> = [];
+    private _search: string;
 
     static getInstance() {
         if (this.instance) {
@@ -25,6 +26,15 @@ export class State {
         return this._tasks;
     }
 
+    set search(value: string) {
+        this._search = value.trim();
+        this.searchTasks();
+    }
+
+    get search() {
+        return this._search;
+    }
+
     subscribe(callback: () => unknown) {
         this.listeners.push(callback);
     }
@@ -34,14 +44,6 @@ export class State {
         this.storeTask(task.id);
 
         shouldUpdate && this.callListeners();
-    }
-
-    private saveTask(task: Task) {
-        if (task.errors.length) return;
-
-        if (!(task.id in this._tasks)) {
-            this._tasks[task.id] = task;
-        }
     }
 
     storeTask(id: string) {
@@ -83,5 +85,23 @@ export class State {
 
     private callListeners() {
         this.listeners.forEach((cb: CallBackFn) => cb());
+    }
+
+    private saveTask(task: Task) {
+        if (task.errors.length) return;
+
+        if (!(task.id in this._tasks)) {
+            this._tasks[task.id] = task;
+        }
+    }
+
+    private searchTasks() {
+        Object.values(this.tasks).forEach((task: Task) => {
+            if (!task.name.includes(this.search)) {
+                task.hide();
+            } else {
+                task.show();
+            }
+        });
     }
 }

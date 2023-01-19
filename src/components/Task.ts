@@ -92,6 +92,36 @@ export class Task {
         return this.errors;
     }
 
+    @withAutobind
+    saveTask(payload: TaskPayload) {
+        this.errors = [];
+
+        this.name = payload.name;
+        this.startDate = payload.start;
+        this.endDate = payload.end;
+        this.priority = payload.priority;
+        this.state.addTask(this);
+        this.getInstance();
+
+        return this.errors;
+    }
+
+    remove() {
+        const isRemoved = this.state.removeTask(this.id);
+
+        if (isRemoved) {
+            this.ref?.destroy();
+        }
+    }
+
+    hide() {
+        this.ref?.destroy();
+    }
+
+    show() {
+        this.ref.show();
+    }
+
     private validateName(name: string) {
         const isEmptyError = Validation.isEmpty(name);
         const maxLengthError = Validation.hasMaxLenght(name, 10);
@@ -119,27 +149,5 @@ export class Task {
         this.status = 'active';
         this._startDate = new Date().toDateString();
         this._endDate = new Date().toDateString();
-    }
-
-    @withAutobind
-    saveTask(payload: TaskPayload) {
-        this.errors = [];
-
-        this.name = payload.name;
-        this.startDate = payload.start;
-        this.endDate = payload.end;
-        this.priority = payload.priority;
-        this.state.addTask(this);
-        this.getInstance();
-
-        return this.errors;
-    }
-
-    remove() {
-        const isRemoved = this.state.removeTask(this.id);
-
-        if (isRemoved) {
-            this.ref?.destroy();
-        }
     }
 }
