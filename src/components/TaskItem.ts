@@ -4,10 +4,9 @@ import { Component } from './Component';
 import { withAutobind } from '../decorators';
 import { RENDERER } from '../renderers';
 import { getDaysLeft } from '../utils';
+import { ID_TASK_HOST } from '../constants';
 
 const ID_TEMPLATE = 'task-item';
-const ID_HOST = 'list-box';
-
 const ID_NAME = 'task-name';
 const ID_REMOVE_BUTTON = 'task-remove';
 const ID_EDIT_BUTTON = 'task-edit';
@@ -24,7 +23,7 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
     daysLeft: HTMLElement;
 
     constructor(private task: Task) {
-        super(ID_TEMPLATE, ID_HOST, true);
+        super(ID_TEMPLATE, ID_TASK_HOST, true);
         this.prepare();
     }
 
@@ -36,7 +35,7 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
     }
 
     show() {
-        this.attachElement(ID_HOST);
+        this.attachElement(ID_TASK_HOST);
     }
 
     protected prepare() {

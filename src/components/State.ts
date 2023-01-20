@@ -102,5 +102,7 @@ export class State {
                 task.show();
             }
         });
+
+        this.callListeners('search');
     }
 }
