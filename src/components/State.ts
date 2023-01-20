@@ -33,32 +33,30 @@ export class State {
         return this._search;
     }
 
+    taskCount() {
+        return Object.keys(this.tasks).length;
+    }
+
     subscribe(payload: SubscribeAction) {
         this.listeners.push(payload);
     }
 
-    addTask(task: Task, shouldUpdate = true) {
+    addTask(task: Task) {
         this.saveTask(task);
-        this.storeTask(task.id);
 
-        shouldUpdate && this.callListeners('add');
+        this.callListeners('add');
     }
 
-    storeTask(id: string) {
-        const task = this.tasks[id];
+    storeTasks() {
+        this.storage = Object.values(this.tasks).map((task: Task) => ({
+            name: task.name,
+            start: task.startDate,
+            end: task.endDate,
+            priority: task.priority,
+            status: task.status,
+        }));
 
-        if (task) {
-            const taskMeta: TaskMeta = {
-                name: task.name,
-                start: task.startDate,
-                end: task.endDate,
-                priority: task.priority,
-                status: task.status,
-            };
-
-            this.storage.push(taskMeta);
-            localStorage.setItem(STORAGE_KEY_TASKS, JSON.stringify(this.storage));
-        }
+        localStorage.setItem(STORAGE_KEY_TASKS, JSON.stringify(this.storage));
     }
 
     getTask(id: string) {
@@ -82,8 +80,11 @@ export class State {
     }
 
     private callListeners(actionType: SubscribeType) {
-        const action = this.listeners.find((payload: SubscribeAction) => payload.type === actionType);
-        action && action.handler();
+        this.listeners.forEach((payload: SubscribeAction) => {
+            if (payload.type === actionType) {
+                payload.handler();
+            }
+        });
     }
 
     private saveTask(task: Task) {

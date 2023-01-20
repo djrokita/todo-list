@@ -6,13 +6,15 @@ import { State } from './State';
 const ID_TEMPLATE = 'task-form';
 const ID_HOST = 'app';
 const ID_NEW = 'task-new';
+const ID_SAVE = 'task-save';
 
 @withErrorMessage
 export class TaskForm extends Component<HTMLTemplateElement, HTMLFormElement> {
     input?: HTMLInputElement;
     error?: HTMLParagraphElement;
     validate: any;
-    addButton: HTMLButtonElement;
+    private addButton: HTMLButtonElement;
+    private saveButton: HTMLButtonElement;
     private state: State;
 
     constructor() {
@@ -32,6 +34,7 @@ export class TaskForm extends Component<HTMLTemplateElement, HTMLFormElement> {
 
     private attachEvents() {
         this.addButton.addEventListener('click', openModalHandler);
+        this.saveButton.addEventListener('click', this.saveHandler);
         this.input.addEventListener('input', this.inputHandler);
     }
 
@@ -41,6 +44,12 @@ export class TaskForm extends Component<HTMLTemplateElement, HTMLFormElement> {
 
     private prepareButtons() {
         this.addButton = this.element?.querySelector(`#${ID_NEW}`);
+        this.saveButton = this.element?.querySelector(`#${ID_SAVE}`);
+    }
+
+    @withAutobind
+    private saveHandler() {
+        return this.state.storeTasks();
     }
 
     @withAutobind

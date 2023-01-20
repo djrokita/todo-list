@@ -54,13 +54,7 @@ export class Dashboard {
             handler: this.prepareView.bind(this),
         };
 
-        const actionRemove: SubscribeAction = {
-            ...actionAdd,
-            type: 'remove',
-        };
-
         this.state.subscribe(actionAdd);
-        this.state.subscribe(actionRemove);
     }
 
     private retrieveStorageData() {

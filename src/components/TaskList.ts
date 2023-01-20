@@ -1,4 +1,5 @@
 import { ID_TASK_HOST } from '../constants';
+import { withAutobind } from '../decorators';
 import { SubscribeAction } from '../types';
 import { Component } from './Component';
 import { State } from './State';
@@ -6,6 +7,9 @@ import { State } from './State';
 const ID_TEMPLATE = 'task-list';
 const ID_HOST = 'app';
 const ID_PLACEHOLDER = 'list-placeholder';
+
+const SEARCH_EMPTY_LIST_TEXT = 'No tasks found';
+const REMOVE_EMPTY_LIST_TEXT = 'No tasks available';
 
 export class TaskList extends Component<HTMLTemplateElement, HTMLDivElement> {
     list: HTMLDivElement;
@@ -26,13 +30,29 @@ export class TaskList extends Component<HTMLTemplateElement, HTMLDivElement> {
         this.attachElement(ID_HOST);
     }
 
-    prepareView() {
-        if (this.list.childElementCount === 0) {
+    @withAutobind
+    onSearchView() {
+        const isHidden = this.list.childElementCount === 0;
+
+        this.toggleView(isHidden, SEARCH_EMPTY_LIST_TEXT);
+    }
+
+    @withAutobind
+    onChangeTaskCountView() {
+        const isHidden = !this.state.taskCount();
+
+        this.toggleView(isHidden, REMOVE_EMPTY_LIST_TEXT);
+    }
+
+    toggleView(isHidden: boolean, message: string) {
+        if (isHidden) {
             this.list.classList.add('is-hidden');
             this.placeholder.classList.remove('is-hidden');
+            this.placeholder.lastElementChild.textContent = message;
         } else {
             this.list.classList.remove('is-hidden');
             this.placeholder.classList.add('is-hidden');
+            this.placeholder.lastElementChild.textContent = '';
         }
     }
 
@@ -48,11 +68,23 @@ export class TaskList extends Component<HTMLTemplateElement, HTMLDivElement> {
     }
 
     private connect() {
-        const action: SubscribeAction = {
+        const actionSearch: SubscribeAction = {
             type: 'search',
-            handler: this.prepareView.bind(this),
+            handler: this.onSearchView,
         };
 
-        this.state.subscribe(action);
+        const actionRemove: SubscribeAction = {
+            type: 'remove',
+            handler: this.onChangeTaskCountView,
+        };
+
+        const actionAdd: SubscribeAction = {
+            type: 'add',
+            handler: this.onChangeTaskCountView,
+        };
+
+        this.state.subscribe(actionSearch);
+        this.state.subscribe(actionRemove);
+        this.state.subscribe(actionAdd);
     }
 }
