@@ -1,14 +1,12 @@
 import { STORAGE_KEY_TASKS } from '../constants';
-import { TaskMeta, TaskPayload } from '../types';
+import { SubscribeAction, SubscribeType, TaskMeta, TaskPayload } from '../types';
 import { Task } from './Task';
-
-type CallBackFn = () => unknown;
 
 export class State {
     private static instance: State;
     _tasks: Record<string, Task> = {};
     private host: HTMLElement | null;
-    private listeners: Array<CallBackFn> = [];
+    private listeners: Array<SubscribeAction> = [];
     private storage: Array<TaskPayload> = [];
     private _search: string;
 
@@ -35,15 +33,15 @@ export class State {
         return this._search;
     }
 
-    subscribe(callback: () => unknown) {
-        this.listeners.push(callback);
+    subscribe(payload: SubscribeAction) {
+        this.listeners.push(payload);
     }
 
     addTask(task: Task, shouldUpdate = true) {
         this.saveTask(task);
         this.storeTask(task.id);
 
-        shouldUpdate && this.callListeners();
+        shouldUpdate && this.callListeners('add');
     }
 
     storeTask(id: string) {
@@ -74,7 +72,7 @@ export class State {
             delete this._tasks[id];
         }
 
-        this.callListeners();
+        this.callListeners('remove');
 
         return !Object.prototype.hasOwnProperty.call(this._tasks, id);
     }
@@ -83,8 +81,9 @@ export class State {
         this.host = document.getElementById('app');
     }
 
-    private callListeners() {
-        this.listeners.forEach((cb: CallBackFn) => cb());
+    private callListeners(actionType: SubscribeType) {
+        const action = this.listeners.find((payload: SubscribeAction) => payload.type === actionType);
+        action && action.handler();
     }
 
     private saveTask(task: Task) {

@@ -62,3 +62,10 @@ declare global {
 export type TaskEvent = CustomEvent<ITask>;
 export type EditNameEvent = CustomEvent<EditNamePayload>;
 export type ModalEvent = CustomEvent<ModalPayload>;
+
+export type SubscribeAction = {
+    type: SubscribeType;
+    handler: () => unknown;
+};
+
+export type SubscribeType = 'add' | 'remove' | 'search';

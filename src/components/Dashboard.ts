@@ -1,5 +1,5 @@
 import { STORAGE_KEY_TASKS } from '../constants';
-import { TaskMeta } from '../types';
+import { SubscribeAction, TaskMeta } from '../types';
 import { Modal } from './Modal';
 import { State } from './State';
 import { Task } from './Task';
@@ -49,7 +49,18 @@ export class Dashboard {
     }
 
     private connect() {
-        this.state.subscribe(this.prepareView.bind(this));
+        const actionAdd: SubscribeAction = {
+            type: 'add',
+            handler: this.prepareView.bind(this),
+        };
+
+        const actionRemove: SubscribeAction = {
+            ...actionAdd,
+            type: 'remove',
+        };
+
+        this.state.subscribe(actionAdd);
+        this.state.subscribe(actionRemove);
     }
 
     private retrieveStorageData() {
