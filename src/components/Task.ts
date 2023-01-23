@@ -115,11 +115,15 @@ export class Task {
     }
 
     hide() {
-        this.ref?.destroy();
+        this.ref.visible = false;
     }
 
     show() {
-        this.ref.show();
+        this.ref.visible = true;
+    }
+
+    isVisible() {
+        return this.ref.visible;
     }
 
     private validateName(name: string) {

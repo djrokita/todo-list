@@ -21,10 +21,20 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
     nameElement: HTMLElement;
     tagElement: HTMLElement;
     daysLeft: HTMLElement;
+    private _visible: boolean;
 
     constructor(private task: Task) {
         super(ID_TEMPLATE, ID_TASK_HOST, true);
         this.prepare();
+    }
+
+    get visible() {
+        return this._visible;
+    }
+
+    set visible(value: boolean) {
+        this._visible = value;
+        value ? this.show() : this.destroy();
     }
 
     update() {
@@ -34,7 +44,7 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
         this.adjustElementToStatus();
     }
 
-    show() {
+    private show() {
         this.attachElement(ID_TASK_HOST);
     }
 
