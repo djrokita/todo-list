@@ -87,127 +87,143 @@
     </div>
   </template>
 
-    <!--TaskForm-->
-    <template id="task-form">
-      <div class="box mx-6">
-        <div class="field is-grouped">
-          <div class="control is-expanded has-icons-left">
-            <input class="input" type="text" placeholder="Search task">
-            <span class="icon is-left">
-              <i class="fas fa-search" aria-hidden="true"></i>
-            </span>
-          </div>
-          <div class="control">
-            <button class="button is-primary" id="task-new">
-              New
-            </button>
-          </div>
+  <!--TaskForm-->
+  <template id="task-form">
+    <div class="box mx-6">
+      <div class="field is-grouped">
+        <div class="control is-expanded has-icons-left">
+          <input class="input" type="text" placeholder="Search task" id="task-search" autofocus>
+          <span class="icon is-left">
+            <i class="fas fa-search" aria-hidden="true"></i>
+          </span>
+        </div>
+        <div class="control">
+          <button class="button is-info" id="task-save">
+            Save
+          </button>
+        </div>
+        <div class="control">
+          <button class="button is-primary" id="task-new">
+            New
+          </button>
         </div>
       </div>
-    </template>
+    </div>
+  </template>
 
-    <!--TaskList-->
-    <template id="task-list">
-      <div class="box mx-6" id="list-box">
-    </template>
+  <!--TaskList-->
+  <template id="task-list">
+    <div>
+      <div class="box mx-6" id="list-items"></div>
+      <div class="box mx-6 is-hidden" id="list-placeholder">
+        <p class="title has-text-centered is-3"></p>
+      </div>
+    </div>
+  </template>
 
-    <!--TaskItem-->
-    <template id="task-item">
-      <div class="box has-background-success-light">
-        <div class="field has-addons">
-          <div class="control is-expanded">
-            <div class="field has-addons">
-              <div class="control">
-                <button class="button is-success is-outlined" id="task-check">
-                  <span class="icon is-medium">
-                    <i class="fa-solid fa-square-check"></i>
-                  </span>
-                </button>
-              </div>
-              <div class="control is-flex-shrink-2 is-flex is-align-items-center px-4" id="task-priority">
-              </div>
-              <div class="control is-expanded is-flex is-align-items-center px-4">
-                <div class="block is-dark has-text-black" id="task-name"></div>
-              </div>
+  <!--TaskItem-->
+  <template id="task-item">
+    <div class="box has-background-success-light">
+      <div class="field has-addons">
+        <div class="control is-expanded">
+          <div class="field has-addons">
+            <div class="control">
+              <button class="button is-success is-outlined" id="task-check">
+                <span class="icon is-medium">
+                  <i class="fa-solid fa-square-check"></i>
+                </span>
+              </button>
             </div>
-          </div>
-
-          <div class="control">
-            <div class="field is-grouped">
-              <div class="control">
-                <button class="button is-info is-outlined" id="task-edit">
-                  <span class="icon is-medium">
-                    <i class="fa-solid fa-pen"></i>
-                  </span>
-                </button>
-              </div>
-              <div class="control">
-
-                <button class="button is-danger is-outlined" id="task-remove">
-                  <span class="icon is-medium">
-                    <i class="fa-solid fa-trash-can"></i>
-                  </span>
-                </button>
-              </div>
+            <div class="control is-flex is-align-items-center px-4" id="task-priority">
+            </div>
+            <div class="control is-flex is-align-items-center px-4">
+              <div class="block is-dark has-text-black has-text-weight-medium" id="task-name"></div>
             </div>
           </div>
         </div>
-      </div>
-    </template>
 
+        <div class="control">
+          <div class="field is-grouped">
+            <div class="control is-flex is-align-items-center px-4">
+              <span class="icon is-left is-medium">
+                <i class="fas fa-2x fa-solid fa-calendar" aria-hidden="true"></i>
+              </span>
+              <div class="block is-dark has-text-black has-text-weight-medium pl-4" id="task-days"></div>
+            </div>
+            <div class="control">
+              <button class="button is-info is-outlined" id="task-edit">
+                <span class="icon is-medium">
+                  <i class="fa-solid fa-pen"></i>
+                </span>
+              </button>
+            </div>
+            <div class="control">
 
-    <!--Modal-->
-    <template id="modal">
-      <div class="modal">
-        <div class="modal-background"></div>
-        <div class="modal-content">
-          <div class="modal-card">
-            <header class="modal-card-head">
-              <p class="modal-card-title" id="modal-header">Modal title</p>
-              <button class="delete" aria-label="close" id="modal-close"></button>
-              <!-- <button class="modal-close is-large" aria-label="close"></button> -->
-
-            </header>
-            <section class="modal-card-body">
-              <!-- Content ... -->
-              <form id="modal-form">
-                <div class="control mb-4">
-                  <label class="label">Task name</label>
-                  <input class="input is-primary" type="text" placeholder="Editted task name" id="modal-input__name">
-                  <p class="help is-danger is-hidden" id="modal-error__name"></p>
-                </div>
-                <div class="field is-grouped mb-4 is-justify-content-space-between">
-                  <div class="control">
-                    <label class="label">Start date</label>
-                    <input class="input is-primary" type="date" id="modal-input__start">
-                    <p class="help is-danger is-hidden" id="modal-error__date"></p>
-
-                  </div>
-                  <div class="control">
-                    <label class="label">End date</label>
-                    <input class="input is-primary" type="date" required pattern="\d{4}-\d{2}-\d{2}"
-                      id="modal-input__end">
-                    </div>
-                  <div class="control">
-                    <label class="label">Priority</label>
-                    <div class="select">
-                      <select id="modal-input__priority">
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              </form>
-            </section>
-            <footer class="modal-card-foot">
-              <button class="button is-success" id="modal-save" type="submit">Save changes</button>
-              <button class="button" id="modal-cancel">Cancel</button>
-            </footer>
+              <button class="button is-danger is-outlined" id="task-remove">
+                <span class="icon is-medium">
+                  <i class="fa-solid fa-trash-can"></i>
+                </span>
+              </button>
+            </div>
           </div>
-    </template>
-    
+        </div>
+      </div>
     </div>
-    </div>
-    </div>
+  </template>
+
+
+  <!--Modal-->
+  <template id="modal">
+    <div class="modal">
+      <div class="modal-background"></div>
+      <div class="modal-content">
+        <div class="modal-card">
+          <header class="modal-card-head">
+            <p class="modal-card-title" id="modal-header">Modal title</p>
+            <button class="delete" aria-label="close" id="modal-close"></button>
+            <!-- <button class="modal-close is-large" aria-label="close"></button> -->
+
+          </header>
+          <section class="modal-card-body">
+            <!-- Content ... -->
+            <form id="modal-form">
+              <div class="control mb-4">
+                <label class="label">Task name</label>
+                <input class="input is-primary" type="text" placeholder="Editted task name" id="modal-input__name">
+                <p class="help is-danger is-hidden" id="modal-error__name"></p>
+              </div>
+              <div class="field is-grouped mb-4 is-justify-content-space-between">
+                <div class="control">
+                  <label class="label">Start date</label>
+                  <input class="input is-primary" type="date" id="modal-input__start">
+                  <p class="help is-danger is-hidden" id="modal-error__date"></p>
+
+                </div>
+                <div class="control">
+                  <label class="label">End date</label>
+                  <input class="input is-primary" type="date" required pattern="\d{4}-\d{2}-\d{2}"
+                    id="modal-input__end">
+                </div>
+                <div class="control">
+                  <label class="label">Priority</label>
+                  <div class="select">
+                    <select id="modal-input__priority">
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </section>
+          <footer class="modal-card-foot">
+            <button class="button is-success" id="modal-save" type="submit">Save changes</button>
+            <button class="button" id="modal-cancel">Cancel</button>
+          </footer>
+        </div>
+  </template>
+
+  </div>
+  </div>
+  </div>
 
 </body>
 

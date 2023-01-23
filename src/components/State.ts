@@ -1,5 +1,5 @@
 import { STORAGE_KEY_TASKS } from '../constants';
-import { SubscribeAction, SubscribeType, TaskMeta, TaskPayload } from '../types';
+import { SubscribeAction, SubscribeType, TaskFilterPriority, TaskPayload } from '../types';
 import { Task } from './Task';
 
 export class State {
@@ -9,6 +9,7 @@ export class State {
     private listeners: Array<SubscribeAction> = [];
     private storage: Array<TaskPayload> = [];
     private _search: string;
+    private _filter: TaskFilterPriority = 'all';
 
     static getInstance() {
         if (this.instance) {
@@ -31,6 +32,15 @@ export class State {
 
     get search() {
         return this._search;
+    }
+
+    set filter(value: TaskFilterPriority) {
+        this._filter = value;
+        this.filterTasks();
+    }
+
+    get filter() {
+        return this._filter;
     }
 
     taskCount() {
@@ -93,6 +103,29 @@ export class State {
         if (!(task.id in this._tasks)) {
             this._tasks[task.id] = task;
         }
+    }
+
+    private filterTasks() {
+        if (this.filter === 'all') {
+            this.showAllTasks();
+
+            return;
+        }
+
+        Object.values(this.tasks).forEach((task: Task) => {
+            if (task.priority !== this.filter) {
+                task.hide();
+            } else {
+                task.show();
+            }
+        });
+
+        this.callListeners('search');
+    }
+
+    private showAllTasks() {
+        Object.values(this.tasks).forEach((task: Task) => task.show());
+        this.callListeners('search');
     }
 
     private searchTasks() {

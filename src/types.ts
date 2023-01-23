@@ -69,3 +69,5 @@ export type SubscribeAction = {
 };
 
 export type SubscribeType = 'add' | 'remove' | 'search';
+
+export type TaskFilterPriority = TaskPriority | 'all';
