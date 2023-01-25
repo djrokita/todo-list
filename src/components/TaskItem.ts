@@ -3,7 +3,7 @@ import { Task } from './Task';
 import { Component } from './Component';
 import { withAutobind } from '../decorators';
 import { RENDERER } from '../renderers';
-import { getDaysLeft } from '../utils';
+import { getDaysLeft, getProgressDays, getProgressStyle } from '../utils';
 import { ID_TASK_HOST } from '../constants';
 
 const ID_TEMPLATE = 'task-item';
@@ -13,6 +13,7 @@ const ID_EDIT_BUTTON = 'task-edit';
 const ID_CHECK_BUTTON = 'task-check';
 const ID_TAG_PRIORITY = 'task-priority';
 const ID_DAYS = 'task-days';
+const ID_PROGRESS = 'task-progress';
 
 export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
     editButton: HTMLElement;
@@ -21,6 +22,7 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
     nameElement: HTMLElement;
     tagElement: HTMLElement;
     daysLeft: HTMLElement;
+    progress: HTMLProgressElement;
     private _visible: boolean;
 
     constructor(private task: Task) {
@@ -52,6 +54,7 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
         this.prepareName();
         this.prepareTag();
         this.prepareDaysLeft();
+        this.prepareProgress();
         this.prepareButtons();
         this.attachEvents();
     }
@@ -78,7 +81,7 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
             this.daysLeft = this.element.querySelector(`#${ID_DAYS}`);
         }
 
-        const days = getDaysLeft(this.task.endDate, this.task.startDate);
+        const days = getDaysLeft(this.task.endDate);
 
         let daysMessage: string;
 
@@ -91,6 +94,16 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
         }
 
         this.daysLeft.textContent = daysMessage;
+    }
+
+    private prepareProgress() {
+        if (!this.progress) {
+            this.progress = this.element.querySelector(`#${ID_PROGRESS}`);
+        }
+
+        const progressIndicator = getProgressDays(this.task.endDate, this.task.startDate);
+        this.progress.value = progressIndicator;
+        this.progress.classList.add(getProgressStyle(progressIndicator));
     }
 
     private prepareButtons() {

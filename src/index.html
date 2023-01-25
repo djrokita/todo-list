@@ -98,6 +98,14 @@
           </span>
         </div>
         <div class="control">
+          <!-- <label class="label"></label> -->
+          <div class="select">
+            <select id="task-priority">
+              <option value="all">All</option>
+            </select>
+          </div>
+        </div>
+        <div class="control">
           <button class="button is-info" id="task-save">
             Save
           </button>
@@ -141,14 +149,16 @@
             </div>
           </div>
         </div>
-
-        <div class="control">
-          <div class="field is-grouped">
+        <div class="control is-one-third-width">
+          <div class="field is-flex is-justify-content-space-between is-grouped">
+            <div class="is-flex is-flex-grow-1 is-align-items-center px-4">
+              <progress class="progress is-primary is-small" value="15" max="100" id="task-progress"></progress>
+            </div>
             <div class="control is-flex is-align-items-center px-4">
               <span class="icon is-left is-medium">
                 <i class="fas fa-2x fa-solid fa-calendar" aria-hidden="true"></i>
               </span>
-              <div class="block is-dark has-text-black has-text-weight-medium pl-4" id="task-days"></div>
+              <div class="is-dark has-text-black has-text-weight-medium pl-4" id="task-days"></div>
             </div>
             <div class="control">
               <button class="button is-info is-outlined" id="task-edit">
@@ -158,7 +168,6 @@
               </button>
             </div>
             <div class="control">
-
               <button class="button is-danger is-outlined" id="task-remove">
                 <span class="icon is-medium">
                   <i class="fa-solid fa-trash-can"></i>

@@ -22,6 +22,21 @@ export function openModalHandler() {
     modalRef?.dispatchEvent(modalEvent);
 }
 
-export function getDaysLeft(endDate: string, startDate: string) {
-    return Math.floor(new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 3600 * 24);
+export function getDaysLeft(endDate: string) {
+    return Math.ceil((new Date(endDate).getTime() - new Date().getTime()) / (1000 * 3600 * 24));
+}
+
+export function getProgressDays(endDate: string, startDate: string) {
+    const daysLeft = new Date().getTime() - new Date(startDate).getTime();
+    const daysRange = new Date(endDate).getTime() - new Date(startDate).getTime() || 1;
+
+    return Math.ceil((daysLeft / daysRange) * 100);
+}
+
+export function getProgressStyle(value: number) {
+    if (value < 0) return 'is-danger';
+    if (value < 30) return 'is-success';
+    if (value < 60) return 'is-warning';
+
+    return 'is-danger';
 }
