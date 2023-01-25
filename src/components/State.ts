@@ -8,7 +8,7 @@ export class State {
     private host: HTMLElement | null;
     private listeners: Array<SubscribeAction> = [];
     private storage: Array<TaskPayload> = [];
-    private _search: string;
+    private _search = '';
     private _filter: TaskFilterPriority = 'all';
 
     static getInstance() {
@@ -112,7 +112,13 @@ export class State {
             return;
         }
 
-        Object.values(this.tasks).forEach((task: Task) => {
+        let tasks = Object.values(this.tasks);
+
+        if (this.search.length) {
+            tasks = tasks.filter((task: Task) => task.name.includes(this.search));
+        }
+
+        tasks.forEach((task: Task) => {
             if (task.priority !== this.filter) {
                 task.hide();
             } else {
@@ -129,7 +135,13 @@ export class State {
     }
 
     private searchTasks() {
-        Object.values(this.tasks).forEach((task: Task) => {
+        let tasks = Object.values(this.tasks);
+
+        if (this.filter !== 'all') {
+            tasks = tasks.filter((task: Task) => task.priority === this.filter);
+        }
+
+        tasks.forEach((task: Task) => {
             if (!task.name.includes(this.search)) {
                 task.hide();
             } else {

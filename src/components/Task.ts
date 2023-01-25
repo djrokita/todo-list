@@ -8,13 +8,13 @@ import { BaseError } from '../errors';
 
 export class Task {
     id: string;
-    _name = '';
+    private _name = '';
     status: Status;
     ref: TaskItem | null = null;
     private state: State;
     priority: TaskPriority = 'medium';
-    _startDate: string;
-    _endDate: string;
+    private _startDate: string;
+    private _endDate: string;
     errors: BaseError[] = [];
 
     static restoreTask(taskMeta: TaskMeta) {
