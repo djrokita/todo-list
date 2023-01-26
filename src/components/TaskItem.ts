@@ -39,6 +39,10 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
         value ? this.show() : this.destroy();
     }
 
+    get elementRef() {
+        return this.element;
+    }
+
     update() {
         this.prepareName();
         this.prepareTag();
@@ -134,6 +138,7 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
         this.removeButton?.addEventListener('click', this.removeHandler);
         this.editButton?.addEventListener('click', this.editHandler);
         this.checkButton?.addEventListener('click', this.checkHandler);
+        this.element.addEventListener('dragstart', this.dragHandler);
     }
 
     @withAutobind
@@ -161,6 +166,13 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
         const detail: ModalPayload = { modal, handler: this.task.edit };
         const modalEvent = new CustomEvent('modal', { detail });
         modalRef?.dispatchEvent(modalEvent);
+    }
+
+    @withAutobind
+    private dragHandler(event: DragEvent) {
+        event.dataTransfer.setData('text/plain', this.task.id);
+        event.dataTransfer.dropEffect = 'move';
+        console.log('dragEvent', event);
     }
 
     protected render() {

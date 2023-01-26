@@ -61,6 +61,7 @@ export class TaskList extends Component<HTMLTemplateElement, HTMLDivElement> {
         this.placeholder = this.element.querySelector(`#${ID_PLACEHOLDER}`);
 
         this.connect();
+        this.attachEvents();
     }
 
     protected render() {
@@ -86,5 +87,29 @@ export class TaskList extends Component<HTMLTemplateElement, HTMLDivElement> {
         this.state.subscribe(actionSearch);
         this.state.subscribe(actionRemove);
         this.state.subscribe(actionAdd);
+    }
+
+    private attachEvents() {
+        this.element.addEventListener('dragover', this.dragoverHandler);
+        this.element.addEventListener('drop', this.dropHandler);
+    }
+
+    @withAutobind
+    private dropHandler(event: DragEvent) {
+        event.preventDefault();
+        const itemId = event.dataTransfer.getData('text/plain');
+        const target = event.target;
+
+        if (target instanceof Element) {
+            const itemTarget = target.closest('.box');
+            const movedReferance = this.state.tasks[itemId];
+            this.list.insertBefore(movedReferance.ref.elementRef, itemTarget);
+        }
+    }
+
+    @withAutobind
+    private dragoverHandler(event: DragEvent) {
+        event.preventDefault();
+        // console.log('dragover ~ event', event);
     }
 }
