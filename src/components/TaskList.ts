@@ -15,6 +15,8 @@ export class TaskList extends Component<HTMLTemplateElement, HTMLDivElement> {
     list: HTMLDivElement;
     placeholder: HTMLDivElement;
     state: State;
+    private dragId: string | null = null;
+    private targetId: string | null = null;
 
     constructor() {
         super(ID_TEMPLATE, ID_HOST);
@@ -92,24 +94,51 @@ export class TaskList extends Component<HTMLTemplateElement, HTMLDivElement> {
     private attachEvents() {
         this.element.addEventListener('dragover', this.dragoverHandler);
         this.element.addEventListener('drop', this.dropHandler);
+        this.element.addEventListener('dragend', this.dragendHandler);
+        this.element.addEventListener('dragleave', this.dragleavedHandler);
     }
 
     @withAutobind
     private dropHandler(event: DragEvent) {
         event.preventDefault();
-        const itemId = event.dataTransfer.getData('text/plain');
+        this.dragId = event.dataTransfer.getData('text/plain');
         const target = event.target;
 
+        if (target === this.list) {
+            this.list.classList.remove('has-background-grey-lighter');
+            this.dragId = null;
+            return;
+        }
+
         if (target instanceof Element) {
-            const itemTarget = target.closest('.box');
-            const movedReferance = this.state.tasks[itemId];
-            this.list.insertBefore(movedReferance.ref.elementRef, itemTarget);
+            const itemTarget = <HTMLElement>target.closest('.task');
+            const dragTask = this.state.getTask(this.dragId);
+            this.list.insertBefore(dragTask.elementRef(), itemTarget);
+            this.targetId = itemTarget.dataset.id;
+            this.list.classList.remove('has-background-grey-lighter');
         }
     }
 
     @withAutobind
     private dragoverHandler(event: DragEvent) {
         event.preventDefault();
-        // console.log('dragover ~ event', event);
+        this.list.classList.add('has-background-grey-lighter');
+    }
+
+    @withAutobind
+    private dragleavedHandler(event: DragEvent) {
+        if ((event.relatedTarget as Element).closest(`#${ID_TASK_HOST}`) !== this.list) {
+            this.list.classList.remove('has-background-grey-lighter');
+        }
+    }
+
+    @withAutobind
+    private dragendHandler(event: DragEvent) {
+        if (event.dataTransfer.dropEffect === 'move') {
+            this.state.reorderTasks(this.dragId, this.targetId);
+        }
+
+        this.dragId = null;
+        this.targetId = null;
     }
 }

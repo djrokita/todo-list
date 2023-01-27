@@ -61,7 +61,7 @@ export class Dashboard {
         const storedTasks = localStorage.getItem(STORAGE_KEY_TASKS);
 
         if (storedTasks) {
-            const metaTasks: TaskMeta[] = JSON.parse(storedTasks);
+            const metaTasks: TaskMeta[] = JSON.parse(storedTasks).reverse();
             metaTasks.forEach((meta: TaskMeta) => Task.restoreTask(meta));
         }
     }

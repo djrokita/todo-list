@@ -4,7 +4,7 @@ import { Task } from './Task';
 
 export class State {
     private static instance: State;
-    _tasks: Record<string, Task> = {};
+    private _tasks: Array<Task> = [];
     private host: HTMLElement | null;
     private listeners: Array<SubscribeAction> = [];
     private storage: Array<TaskPayload> = [];
@@ -58,7 +58,7 @@ export class State {
     }
 
     storeTasks() {
-        this.storage = Object.values(this.tasks).map((task: Task) => ({
+        this.storage = this.tasks.map((task: Task) => ({
             name: task.name,
             start: task.startDate,
             end: task.endDate,
@@ -70,19 +70,28 @@ export class State {
     }
 
     getTask(id: string) {
-        if (this._tasks[id] instanceof Task) {
-            return this._tasks[id];
-        }
+        return this.tasks.find((task: Task): boolean => task.id === id);
     }
 
     removeTask(id: string) {
-        if (Object.prototype.hasOwnProperty.call(this._tasks, id)) {
-            delete this._tasks[id];
-        }
-
+        this._tasks = this.tasks.filter((task: Task): boolean => task.id !== id);
         this.callListeners('remove');
 
-        return !Object.prototype.hasOwnProperty.call(this._tasks, id);
+        return true;
+    }
+
+    reorderTasks(movedId: string, targetId: string) {
+        const movedIndex = this.tasks.findIndex((task: Task) => task.id === movedId);
+        const targetIndex = this.tasks.findIndex((task: Task) => task.id === targetId);
+
+        if (targetIndex < 0 || movedIndex < 0) return;
+
+        const movedTask = this.tasks.find((task: Task) => task.id === movedId);
+
+        if (movedTask) {
+            this.tasks.splice(movedIndex, 1);
+            this.tasks.splice(targetIndex, 0, movedTask);
+        }
     }
 
     private constructor() {
@@ -100,8 +109,8 @@ export class State {
     private saveTask(task: Task) {
         if (task.errors.length) return;
 
-        if (!(task.id in this._tasks)) {
-            this._tasks[task.id] = task;
+        if (!this.getTask(task.id)) {
+            this._tasks.unshift(task);
         }
     }
 

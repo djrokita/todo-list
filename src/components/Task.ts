@@ -10,7 +10,7 @@ export class Task {
     id: string;
     private _name = '';
     status: Status;
-    ref: TaskItem | null = null;
+    private _item: TaskItem;
     private state: State;
     priority: TaskPriority = 'medium';
     private _startDate: string;
@@ -75,6 +75,10 @@ export class Task {
         }
     }
 
+    elementRef() {
+        return this._item.referance;
+    }
+
     @withAutobind
     changeName(name: string) {
         this.name = name;
@@ -87,7 +91,7 @@ export class Task {
         this.name = name;
         this.priority = priority;
         this.endDate = end;
-        this.ref.update();
+        this._item.update();
 
         return this.errors;
     }
@@ -110,20 +114,20 @@ export class Task {
         const isRemoved = this.state.removeTask(this.id);
 
         if (isRemoved) {
-            this.ref?.destroy();
+            this._item?.destroy();
         }
     }
 
     hide() {
-        this.ref.visible = false;
+        this._item.visible = false;
     }
 
     show() {
-        this.ref.visible = true;
+        this._item.visible = true;
     }
 
     isVisible() {
-        return this.ref.visible;
+        return this._item.visible;
     }
 
     private validateName(name: string) {
@@ -145,7 +149,7 @@ export class Task {
 
     private getInstance() {
         if (this.state.getTask(this.id)) {
-            this.ref = new TaskItem(this);
+            this._item = new TaskItem(this);
         }
     }
 

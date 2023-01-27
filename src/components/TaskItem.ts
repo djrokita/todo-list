@@ -39,7 +39,7 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
         value ? this.show() : this.destroy();
     }
 
-    get elementRef() {
+    get referance() {
         return this.element;
     }
 
@@ -55,12 +55,17 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
     }
 
     protected prepare() {
+        this.prepareID();
         this.prepareName();
         this.prepareTag();
         this.prepareDaysLeft();
         this.prepareProgress();
         this.prepareButtons();
         this.attachEvents();
+    }
+
+    private prepareID() {
+        this.element.dataset.id = this.task.id;
     }
 
     private prepareName() {
@@ -138,7 +143,7 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
         this.removeButton?.addEventListener('click', this.removeHandler);
         this.editButton?.addEventListener('click', this.editHandler);
         this.checkButton?.addEventListener('click', this.checkHandler);
-        this.element.addEventListener('dragstart', this.dragHandler);
+        this.element.addEventListener('dragstart', this.dragstartHandler);
     }
 
     @withAutobind
@@ -169,10 +174,9 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
     }
 
     @withAutobind
-    private dragHandler(event: DragEvent) {
+    private dragstartHandler(event: DragEvent) {
         event.dataTransfer.setData('text/plain', this.task.id);
-        event.dataTransfer.dropEffect = 'move';
-        console.log('dragEvent', event);
+        event.dataTransfer.effectAllowed = 'move';
     }
 
     protected render() {
