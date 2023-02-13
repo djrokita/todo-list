@@ -155,7 +155,8 @@ export class Task {
 
     private generateInitData() {
         this.status = 'active';
-        this._startDate = new Date().toDateString();
-        this._endDate = new Date().toDateString();
+        const date = new Date().toJSON().slice(0, 10);
+        this._startDate = date;
+        this._endDate = date;
     }
 }

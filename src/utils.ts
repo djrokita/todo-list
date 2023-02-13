@@ -23,7 +23,10 @@ export function openModalHandler() {
 }
 
 export function getDaysLeft(endDate: string) {
-    return Math.ceil((new Date(endDate).getTime() - new Date().getTime()) / (1000 * 3600 * 24));
+    const oneDay = 86400000;
+    const today = new Date().toJSON().slice(0, 10);
+
+    return Math.floor((new Date(endDate).valueOf() - new Date(today).valueOf()) / oneDay);
 }
 
 export function getProgressDays(endDate: string, startDate: string) {

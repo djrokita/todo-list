@@ -106,8 +106,8 @@ export class Modal extends Component<HTMLTemplateElement, HTMLDivElement> {
         this.setHeader();
 
         this.taskName.value = this.modal.name;
-        this.startDate.valueAsDate = new Date(this.modal.start);
-        this.endDate.valueAsDate = new Date(this.modal.end);
+        this.startDate.value = this.modal.start;
+        this.endDate.value = this.modal.end;
         this.priority.value = this.modal.priority;
     }
 
