@@ -47,6 +47,7 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
         this.prepareName();
         this.prepareTag();
         this.prepareDaysLeft();
+        this.prepareProgress();
         this.adjustElementToStatus();
     }
 
@@ -112,6 +113,7 @@ export class TaskItem extends Component<HTMLDivElement, HTMLDivElement> {
 
         const progressIndicator = getProgressDays(this.task.endDate, this.task.startDate);
         this.progress.value = progressIndicator;
+        this.progress.classList.remove('is-danger', 'is-warning', 'is-success');
         this.progress.classList.add(getProgressStyle(progressIndicator));
     }
 

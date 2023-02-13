@@ -1,6 +1,12 @@
 import { Task } from './components/Task';
 import { ModalPayload, TModal } from './types';
 
+const ONE_DAY = 86400000;
+
+function getTodayDate() {
+    return new Date().toJSON().slice(0, 10);
+}
+
 export function generateID() {
     return (Math.random() * 100).toString(16).replace(/[.]/g, '');
 }
@@ -23,21 +29,21 @@ export function openModalHandler() {
 }
 
 export function getDaysLeft(endDate: string) {
-    const oneDay = 86400000;
-    const today = new Date().toJSON().slice(0, 10);
+    const today = getTodayDate();
 
-    return Math.floor((new Date(endDate).valueOf() - new Date(today).valueOf()) / oneDay);
+    return Math.floor((new Date(endDate).valueOf() - new Date(today).valueOf()) / ONE_DAY);
 }
 
 export function getProgressDays(endDate: string, startDate: string) {
-    const daysLeft = new Date().getTime() - new Date(startDate).getTime();
-    const daysRange = new Date(endDate).getTime() - new Date(startDate).getTime() || 1;
+    const today = getTodayDate();
+    const daysLeft = (new Date(today).valueOf() - new Date(startDate).valueOf()) / ONE_DAY + 1;
+    const daysRange = (new Date(endDate).valueOf() - new Date(startDate).valueOf()) / ONE_DAY || 1;
 
     return Math.ceil((daysLeft / daysRange) * 100);
 }
 
 export function getProgressStyle(value: number) {
-    if (value < 0) return 'is-danger';
+    if (value <= 0) return 'is-danger';
     if (value < 30) return 'is-success';
     if (value < 60) return 'is-warning';
 
