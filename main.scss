@@ -8,6 +8,10 @@
     outline: 1px solid red;
 }
 
+.dev2 {
+    outline: 1px solid blue;
+}
+
 .dashboard {
     max-width: 600px;
 }
@@ -22,4 +26,8 @@
 
 .is-one-third-width {
     width: 33%;
+}
+
+.is-border {
+    border: 1px solid $grey-light;
 }
